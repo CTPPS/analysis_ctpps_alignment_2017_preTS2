@@ -20,25 +20,29 @@ config = cms.PSet(
 
     n_si = cms.double(4.),
 
-	cut1_apply = cms.bool(True),
-	cut1_a = cms.double(-1),
-	cut1_c = cms.double(0),
-	cut1_si = cms.double(0.2),
+    sector_45 = cms.PSet(
+      cut_h_apply = cms.bool(True),
+      cut_h_a = cms.double(-1),
+      cut_h_c = cms.double(0),
+      cut_h_si = cms.double(0.2),
 
-	cut2_apply = cms.bool(True),
-	cut2_a = cms.double(-1),
-	cut2_c = cms.double(0),
-	cut2_si = cms.double(0.2),
+      cut_v_apply = cms.bool(False),
+      cut_v_a = cms.double(-1.1),
+      cut_v_c = cms.double(0.9),
+      cut_v_si = cms.double(0.5),
+    ),
 
-	cut3_apply = cms.bool(False),
-	cut3_a = cms.double(-1.1),
-	cut3_c = cms.double(0.9),
-	cut3_si = cms.double(0.5),
+    sector_56 = cms.PSet(
+      cut_h_apply = cms.bool(True),
+      cut_h_a = cms.double(-1),
+      cut_h_c = cms.double(0),
+      cut_h_si = cms.double(0.2),
 
-	cut4_apply = cms.bool(False),
-	cut4_a = cms.double(-1.1),
-	cut4_c = cms.double(0.8),
-	cut4_si = cms.double(0.5),
+      cut_v_apply = cms.bool(False),
+      cut_v_a = cms.double(-1.1),
+      cut_v_c = cms.double(0.8),
+      cut_v_si = cms.double(0.5),
+    ),
 
     matching_1d = cms.PSet(
       reference_datasets = cms.vstring(),
@@ -66,6 +70,25 @@ config = cms.PSet(
         x_max = cms.double(0.),
         sh_min = cms.double(-44),
         sh_max = cms.double(-40)
+      )
+    ),
+
+    alignment_y = cms.PSet(
+      rp_L_2_F = cms.PSet(
+        x_min = cms.double(46.5),
+        x_max = cms.double(57.),
+      ),
+      rp_L_1_F = cms.PSet(
+        x_min = cms.double(8.),
+        x_max = cms.double(18.),
+      ),
+      rp_R_1_F = cms.PSet(
+        x_min = cms.double(7.5),
+        x_max = cms.double(18.),
+      ),
+      rp_R_2_F = cms.PSet(
+        x_min = cms.double(47.),
+        x_max = cms.double(57.),
       )
     )
 )
