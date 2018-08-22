@@ -6,9 +6,9 @@ sys.path.append(os.path.relpath("../../../../../"))
 
 from config_base import config
 
-config.cut1_c = -38.4
+config.sector_45.cut_h_c = -38.4
 
-config.cut2_c = -39.3
+config.sector_56.cut_h_c = -39.3
 
 config.matching_1d.reference_datasets = cms.vstring("data/alig/fill_5685/xangle_120/DS1")
 
