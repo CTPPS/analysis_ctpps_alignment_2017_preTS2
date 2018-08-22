@@ -10,10 +10,10 @@ from input_files import input_files
 
 config.input_files = input_files
 
-config.cut1_a = -1.01
-config.cut1_c = -38.25
-config.cut1_si = 0.2
+config.sector_45.cut_h_a = -1.01
+config.sector_45.cut_h_c = -38.25
+config.sector_45.cut_h_si = 0.2
 
-config.cut2_a = -0.99
-config.cut2_c = -39.25
-config.cut2_si = 0.2
+config.sector_56.cut_h_a = -0.99
+config.sector_56.cut_h_c = -39.25
+config.sector_56.cut_h_si = 0.2
