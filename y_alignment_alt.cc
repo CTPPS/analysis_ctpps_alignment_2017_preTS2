@@ -80,10 +80,10 @@ int main()
 
 			// TODO
 			//double p0_init = input_alignments[ad.rp_id_F].sh_y - input_alignments[ad.rp_id_N].sh_y;;
-			double p0_init = 0.;
+			double p0_init = -0.3;
 			double p1_init = 0.10;
 			double p2_init = 0.07;
-			double p3_init = (rp == "N") ? 0. : 0.;
+			double p3_init = 3.7;
 			double p4_init = (rp == "N") ? 0.3 : 0.6;
 
 			ff->SetParameters(p0_init, p1_init, p2_init, p3_init, p4_init);
