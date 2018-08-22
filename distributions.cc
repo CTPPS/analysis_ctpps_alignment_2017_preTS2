@@ -164,7 +164,7 @@ SectorData::SectorData(const string _name, unsigned int _rpIdUp, unsigned int _r
 	const double y_min = -20., y_max = +20.;
 
 	// hit distributions
-	m_h1_x_bef_sel[rpIdUp] = new TH1D("", ";x", 10*n_bins_x, x_min_pix, x_max_pix);
+	m_h1_x_bef_sel[rpIdUp] = new TH1D("", ";x", 10*n_bins_x, x_min_str, x_max_str);
 	m_h1_x_bef_sel[rpIdDw] = new TH1D("", ";x", 10*n_bins_x, x_min_pix, x_max_pix);
 
 	m_h2_y_vs_x_bef_sel[rpIdUp] = new TH2D("", ";x;y", n_bins_x, x_min_str, x_max_str, n_bins_y, y_min, y_max);
