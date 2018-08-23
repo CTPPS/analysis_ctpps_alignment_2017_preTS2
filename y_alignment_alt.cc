@@ -40,8 +40,8 @@ int main()
 	};
 
 	vector<ArmData> armData = {
-		{ "sector 45", 2, 3, +0.175, +0.175 },
-		{ "sector 56", 102, 103, +0.075, +0.075 },
+		{ "sector 45", 2, 3, 0., 0. },
+		{ "sector 56", 102, 103, 0., 0. },
 	};
 
 	// get input
@@ -78,25 +78,24 @@ int main()
 				continue;
 			}
 
-			// TODO
-			//double p0_init = input_alignments[ad.rp_id_F].sh_y - input_alignments[ad.rp_id_N].sh_y;;
 			double p0_init = -0.3;
 			double p1_init = 0.10;
 			double p2_init = 0.07;
 			double p3_init = 3.7;
-			double p4_init = (rp == "N") ? 0.3 : 0.6;
+			double p4_init = (ad.name == "sector 45") ? 1.0 : 0.7;
 
 			ff->SetParameters(p0_init, p1_init, p2_init, p3_init, p4_init);
 
 			double x_min, x_max;
+			double x_range = 3.;
 
-			x_min = ff->GetParameter(3.) - 3.; x_max = ff->GetParameter(3.) + 3.;
+			x_min = ff->GetParameter(3.) - x_range; x_max = ff->GetParameter(3.) + x_range;
 			ff->FixParameter(3, p3_init);
 			p_y_diffFN_vs_y->Fit(ff, "Q", "", x_min, x_max);
 			ff->ReleaseParameter(3);
 			p_y_diffFN_vs_y->Fit(ff, "Q", "", x_min, x_max);
 
-			x_min = ff->GetParameter(3.) - 3.; x_max = ff->GetParameter(3.) + 3.;
+			x_min = ff->GetParameter(3.) - x_range; x_max = ff->GetParameter(3.) + x_range;
 			p_y_diffFN_vs_y->Fit(ff, "Q", "", x_min, x_max);
 			p_y_diffFN_vs_y->Fit(ff, "Q", "", x_min, x_max);
 
