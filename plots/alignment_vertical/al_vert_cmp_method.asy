@@ -8,23 +8,24 @@ InitDataSets();
 
 //----------------------------------------------------------------------------------------------------
 
-string sample_labels[];
-pen sample_pens[];
-sample_labels.push("ZeroBias"); sample_pens.push(blue);
-sample_labels.push("DoubleEG"); sample_pens.push(red);
-sample_labels.push("SingleMuon"); sample_pens.push(heavygreen);
+pen p_meth_fit = red;
+pen p_meth_s_curve = blue;
+
+string sample = "DoubleEG";
+//string sample = "SingleMuon";
+//string sample = "ZeroBias";
 
 int xangle = 150;
 
 real sfa = 0.3;
 
 int rp_ids[];
-string rps[], rp_labels[];
+string rps[], rp_labels[], rp_dirs[];
 real rp_y_min[], rp_y_max[];
-rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_y_min.push(3); rp_y_max.push(4);
-rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_y_min.push(3); rp_y_max.push(4);
-rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(3); rp_y_max.push(4);
-rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(3); rp_y_max.push(4);
+rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 45/F");
+rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 45/N");
+rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 56/N");
+rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(3); rp_y_max.push(4); rp_dirs.push("sector 56/F");
 
 xSizeDef = 40cm;
 
@@ -50,10 +51,8 @@ NewPad(false, 1, 1);
 
 AddToLegend(format("xangle = %u", xangle));
 
-for (int sai : sample_labels.keys)
-{
-	AddToLegend(sample_labels[sai], sample_pens[sai]);
-}
+AddToLegend("method ``fit''", mCi+3pt+p_meth_fit);
+AddToLegend("method ``s-curve''", mCi+3pt+p_meth_s_curve);
 
 AttachLegend();
 
@@ -86,29 +85,40 @@ for (int rpi : rps.keys)
 	
 			mark m = mCi+3pt;
 
-			for (int sai : sample_labels.keys)
 			{
-				string f = topDir + dataset + "/" + sample_labels[sai] + "/y_alignment.root";
-
-				RootObject results = RootGetObject(f, rps[rpi] + "/g_results", error = false);
-		
-				if (!results.valid)
-					continue;
-		
 				real x = fdi;
 
-				real ax[] = {0.};
-				real ay[] = {0.};
-				results.vExec("GetPoint", 0, ax, ay); real sh_x = ax[0];
-				results.vExec("GetPoint", 1, ax, ay); real a = ax[0], a_unc = ay[0];
-				results.vExec("GetPoint", 2, ax, ay); real b = ax[0], b_unc = ay[0];
-				results.vExec("GetPoint", 3, ax, ay); real b_fs = ax[0], b_fs_unc = ay[0];
+				mark m = mCi+3pt;
 
-				pen p = sample_pens[sai];
-
+				// "fit" method
+				string f = topDir + dataset + "/" + sample + "/y_alignment.root";
+				RootObject results = RootGetObject(f, rps[rpi] + "/g_results", error = false);
+		
+				if (results.valid)
 				{
-					draw((x, b), m + p);
-					draw((x, b - b_unc)--(x, b + b_unc), p);
+					real ax[] = {0.};
+					real ay[] = {0.};
+					results.vExec("GetPoint", 0, ax, ay); real sh_x = ax[0];
+					results.vExec("GetPoint", 1, ax, ay); real a = ax[0], a_unc = ay[0];
+					results.vExec("GetPoint", 2, ax, ay); real b = ax[0], b_unc = ay[0];
+					results.vExec("GetPoint", 3, ax, ay); real b_fs = ax[0], b_fs_unc = ay[0];
+
+					draw((x, b), m + p_meth_fit);
+					draw((x, b - b_unc)--(x, b + b_unc), p_meth_fit);
+				}
+
+				// get "s curve" method result
+
+				string f = topDir + dataset + "/" + sample + "/y_alignment_alt.root";
+				RootObject fit = RootGetObject(f, rp_dirs[rpi] + "/p_y_diffFN_vs_y|ff", error=false);
+		
+				if (fit.valid)
+				{
+					real p3 = fit.rExec("GetParameter", 3);
+					real p3_unc = fit.rExec("GetParError", 3);
+
+					draw((x, p3), m + p_meth_s_curve);
+					draw((x, p3 - p3_unc)--(x, p3 + p3_unc), p_meth_s_curve);
 				}
 			}
 		}
