@@ -39,6 +39,7 @@ int main()
 		double sh_x;
 	};
 
+	// TODO: update slope parameters
 	vector<RPData> rpData = {
 		{ "L_2_F", 23,   "sector 45", -0.03, -42.05 },
 		{ "L_1_F",  3,   "sector 45", -0.03, -3.7 },
@@ -55,8 +56,8 @@ int main()
 	// prepare results
 	AlignmentResultsCollection results;
 
-	TF1 *ff = new TF1("ff", "[0] + [1]*x");
-	TF1 *ff_sl_fix = new TF1("ff_sl_fix", "[0] + [1]*x");
+	TF1 *ff = new TF1("ff", "[0] + [1]*(x - [2])");
+	TF1 *ff_sl_fix = new TF1("ff_sl_fix", "[0] + [1]*(x - [2])");
 
 	// processing
 	for (const auto &rpd : rpData)
@@ -74,29 +75,30 @@ int main()
 			continue;
 		}
 
-		// TODO
 		const double sh_x = rpd.sh_x;
 
-		const double x_min = cfg.alignment_y_ranges[rpd.id].x_min - sh_x;
-		const double x_max = cfg.alignment_y_ranges[rpd.id].x_max - sh_x;
+		const double x_min = cfg.alignment_y_ranges[rpd.id].x_min;
+		const double x_max = cfg.alignment_y_ranges[rpd.id].x_max;
 
 		printf("    x_min = %.3f, x_max = %.3f\n", x_min, x_max);
 
-		ff->SetParameters(0., 0.);
+		ff->SetParameters(0., 0., 0.);
+		ff->FixParameter(2, -sh_x);
 		ff->SetLineColor(2);
 		p_y_vs_x->Fit(ff, "Q", "", x_min, x_max);
 
 		const double a = ff->GetParameter(1), a_unc = ff->GetParError(1);
-		const double b = ff->Eval(-sh_x), b_unc = sqrt(pow(a_unc * sh_x, 2.) + pow(ff->GetParError(0), 2.));
+		const double b = ff->GetParameter(0), b_unc = ff->GetParError(0);
 
 		results["y_alignment"][rpd.id] = AlignmentResult(0., 0., b, b_unc, 0., 0.);
 
-		ff_sl_fix->SetParameters(0., 0.);
+		ff_sl_fix->SetParameters(0., 0., 0.);
 		ff_sl_fix->FixParameter(1, rpd.slope);
+		ff_sl_fix->FixParameter(2, -sh_x);
 		ff_sl_fix->SetLineColor(4);
 		p_y_vs_x->Fit(ff_sl_fix, "Q+", "", x_min, x_max);
 
-		const double b_fs = ff_sl_fix->Eval(-sh_x), b_fs_unc = ff_sl_fix->GetParError(0);
+		const double b_fs = ff_sl_fix->GetParameter(0), b_fs_unc = ff_sl_fix->GetParError(0);
 
 		results["y_alignment_sl_fix"][rpd.id] = AlignmentResult(0., 0., b_fs, b_fs_unc, 0., 0.);
 
