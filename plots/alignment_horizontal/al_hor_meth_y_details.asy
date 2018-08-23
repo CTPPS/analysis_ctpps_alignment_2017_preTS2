@@ -3,33 +3,22 @@ import pad_layout;
 
 string topDir = "../../";
 
-string dataset = "period1_physics/fill_4964";
-//string dataset = "period1_physics/fill_5024";
-//string dataset = "period1_physics/fill_5052";
+string reference = "data_alig_fill_5685_xangle_120_DS1";
 
-string reference = "10081";
+string dataset = "data/phys/fill_5848/xangle_120/SingleMuon";
 
-string rps[] = {
-	"L_1_F",
-	"L_1_N",
-	"R_1_N",
-	"R_1_F",
-};
+string rps[], rp_labels[];
+//rps.push("L_2_F"); rp_labels.push("L-220-fr");
+//rps.push("L_1_F"); rp_labels.push("L-210-fr");
+rps.push("R_1_F"); rp_labels.push("R-210-fr");
+rps.push("R_2_F"); rp_labels.push("R-220-fr");
 
 ySizeDef = 5cm;
 
 //----------------------------------------------------------------------------------------------------
 
-NewPad(false);
-label(replace(dataset, "_", "\_"));
-
-NewRow();
-
 for (int rpi : rps.keys)
-{
-	NewPad(false);
-	label("{\SetFontSizesXX " + replace(rps[rpi], "_", "\_") + "}");
-}
+	NewPadLabel(rp_labels[rpi]);
 
 NewRow();
 
@@ -38,7 +27,7 @@ for (int rpi : rps.keys)
 	NewPad("$x\ung{mm}$", "std.~dev.~of $y\ung{mm}$");
 	currentpad.yTicks = RightTicks(0.5, 0.1);
 
-	string p_base = rps[rpi] + "/" + reference + "/method y/c_cmp|";
+	string p_base = reference + "/" + rps[rpi] + "/method y/c_cmp|";
 	draw(RootGetObject(topDir + dataset+"/match.root", p_base + "h_ref_sel"), "d0,eb", black);
 	draw(RootGetObject(topDir + dataset+"/match.root", p_base + "h_test_bef"), "d0,eb", blue);
 	draw(RootGetObject(topDir + dataset+"/match.root", p_base + "h_test_aft"), "d0,eb", red);
@@ -54,7 +43,7 @@ for (int rpi : rps.keys)
 {
 	NewPad("shift$\ung{mm}$", "bins in overlap");
 	
-	string p_base = rps[rpi] + "/" + reference + "/method y";
+	string p_base = reference + "/" + rps[rpi] + "/method y";
 
 	RootGetObject(topDir + dataset+"/match.root", p_base + "/g_results");
 	real ax[] = { 0. };
@@ -76,7 +65,7 @@ for (int rpi : rps.keys)
 {
 	NewPad("shift$\ung{mm}$", "$S^2 / N$");
 	
-	string p_base = rps[rpi] + "/" + reference + "/method y";
+	string p_base = reference + "/" + rps[rpi] + "/method y";
 
 	RootGetObject(topDir + dataset+"/match.root", p_base + "/g_results");
 	real ax[] = { 0. };

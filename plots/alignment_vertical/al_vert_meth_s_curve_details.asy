@@ -5,9 +5,9 @@ string topDir = "../../data/phys/";
 
 string plots[], p_arms[], p_rps[], p_x_axis[], p_y_axis[];
 plots.push("sector 45/N/p_y_diffFN_vs_y"); p_arms.push("sector 45"); p_rps.push("near"); p_x_axis.push("y_{LN}\ung{mm}"); p_y_axis.push("y_{LF} - y_{LN}\ung{mm}");
-//plots.push("sector 45/F/p_y_diffFN_vs_y"); p_arms.push("sector 45"); p_rps.push("far"); p_x_axis.push("y_{LF}\ung{mm}"); p_y_axis.push("y_{LF} - y_{LN}\ung{mm}");
+plots.push("sector 45/F/p_y_diffFN_vs_y"); p_arms.push("sector 45"); p_rps.push("far"); p_x_axis.push("y_{LF}\ung{mm}"); p_y_axis.push("y_{LF} - y_{LN}\ung{mm}");
 plots.push("sector 56/N/p_y_diffFN_vs_y"); p_arms.push("sector 56"); p_rps.push("near"); p_x_axis.push("y_{RN}\ung{mm}"); p_y_axis.push("y_{RF} - y_{RN}\ung{mm}");
-//plots.push("sector 56/F/p_y_diffFN_vs_y"); p_arms.push("sector 56"); p_rps.push("far"); p_x_axis.push("y_{RF}\ung{mm}"); p_y_axis.push("y_{RF} - y_{RN}\ung{mm}");
+plots.push("sector 56/F/p_y_diffFN_vs_y"); p_arms.push("sector 56"); p_rps.push("far"); p_x_axis.push("y_{RF}\ung{mm}"); p_y_axis.push("y_{RF} - y_{RN}\ung{mm}");
 
 xSizeDef = 9cm;
 
@@ -20,6 +20,15 @@ string datasets[] = {
 	"fill_6090/xangle_150/DoubleEG",
 	"fill_6155/xangle_150/DoubleEG",
 	"fill_6192/xangle_150/DoubleEG",
+};
+
+string datasets[] = {
+	"fill_5839/xangle_150/ZeroBias",
+	"fill_6060/xangle_150/ZeroBias",
+	"fill_6084/xangle_150/ZeroBias",
+	"fill_6097/xangle_150/ZeroBias",
+	"fill_6147/xangle_150/ZeroBias",
+	"fill_6180/xangle_150/ZeroBias",
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -41,7 +50,7 @@ for (int dsi : datasets.keys)
 	{
 		NewPad("$" + p_x_axis[pli] + "$", "mean of $" + p_y_axis[pli] + "$");
 	
-		RootObject profile = RootGetObject(topDir + dataset + "/y_alignment_alt.root", plots[pli]);
+		RootObject profile = RootGetObject(topDir + dataset + "/y_alignment_alt.root", plots[pli], error=false);
 		RootObject fit = RootGetObject(topDir + dataset + "/y_alignment_alt.root", plots[pli] + "|ff", error=false);
 
 		if (!fit.valid)

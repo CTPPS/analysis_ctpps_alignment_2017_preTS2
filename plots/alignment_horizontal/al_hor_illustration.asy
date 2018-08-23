@@ -45,7 +45,6 @@ draw(RootGetObject(topDir + dataset+"/match.root", p_base + "h_test_aft"), "d0,e
 
 limits((4, 0), (17, 3), Crop);
 
-AttachLegend(NW, NW);
-
+AttachLegend("``method y''", NW, NW);
 
 GShipout(hSkip=10mm, vSkip=1mm);
