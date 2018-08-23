@@ -144,6 +144,8 @@ struct SectorData
 	TProfile *p_y_diffFN_vs_y_N;
 	TProfile *p_y_diffFN_vs_y_F;
 
+	map<unsigned int, TProfile *> x_slice_p_y_diffFN_vs_y_F, x_slice_p_y_diffFN_vs_y_N;
+
 	SectorData(const string _name, unsigned int _rpIdUp, unsigned int _rpIdDw, const SectorConfig &_scfg);
 
 	unsigned int Process(const vector<CTPPSLocalTrackLite> &tracks);
@@ -204,6 +206,12 @@ SectorData::SectorData(const string _name, unsigned int _rpIdUp, unsigned int _r
 	p_x_diffFN_vs_x_N = new TProfile("", ";x_{N};x_{F} - x_{N}", 100, 0., 20.);
 	p_y_diffFN_vs_y_N = new TProfile("", ";y_{N};y_{F} - y_{N}", 200, -10., 10.);
 	p_y_diffFN_vs_y_F = new TProfile("", ";y_{F};y_{F} - y_{N}", 200, -10., 10.);
+
+	for (int i = 0; i < scfg.nr_x_slice_n; ++i)
+		x_slice_p_y_diffFN_vs_y_N[i] = new TProfile("", ";y_{N};x_{F} - y_{N}", 100, 0., 20.);
+
+	for (int i = 0; i < scfg.fr_x_slice_n; ++i)
+		x_slice_p_y_diffFN_vs_y_F[i] = new TProfile("", ";y_{F};x_{F} - y_{N}", 100, 0., 20.);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -315,6 +323,14 @@ unsigned int SectorData::Process(const vector<CTPPSLocalTrackLite> &tracks)
 					p_y_diffFN_vs_y_N->Fill(trUp.getY(), trDw.getY() - trUp.getY());
 					p_y_diffFN_vs_y_F->Fill(trDw.getY(), trDw.getY() - trUp.getY());
 				}
+
+				idx = (trUp.getX() - scfg.nr_x_slice_min) / scfg.nr_x_slice_w;
+				if (idx >= 0 && idx < scfg.nr_x_slice_n)
+					x_slice_p_y_diffFN_vs_y_N[idx]->Fill(trUp.getY(), trDw.getY() - trUp.getY());
+
+				idx = (trDw.getX() - scfg.fr_x_slice_min) / scfg.fr_x_slice_w;
+				if (idx >= 0 && idx < scfg.fr_x_slice_n)
+					x_slice_p_y_diffFN_vs_y_F[idx]->Fill(trDw.getY(), trDw.getY() - trUp.getY());
 			}
 		}
 	}
@@ -392,6 +408,28 @@ void SectorData::Write() const
 	p_y_diffFN_vs_y_N->Write("p_y_diffFN_vs_y_N");
 	p_y_diffFN_vs_y_F->Write("p_y_diffFN_vs_y_F");
 
+	gDirectory = d_near_far->mkdir("p_y_diffFN_vs_y_N, x slices");
+	for (const auto &p : x_slice_p_y_diffFN_vs_y_N)
+	{
+		const double x_min = scfg.nr_x_slice_min + p.first * scfg.nr_x_slice_w;
+		const double x_max = scfg.nr_x_slice_min + (p.first+1) * scfg.nr_x_slice_w;
+
+		char buf[100];
+		sprintf(buf, "%.1f-%.1f", x_min, x_max);
+		p.second->Write(buf);
+	}
+
+	gDirectory = d_near_far->mkdir("p_y_diffFN_vs_y_F, x slices");
+	for (const auto &p : x_slice_p_y_diffFN_vs_y_F)
+	{
+		const double x_min = scfg.fr_x_slice_min + p.first * scfg.fr_x_slice_w;
+		const double x_max = scfg.fr_x_slice_min + (p.first+1) * scfg.fr_x_slice_w;
+
+		char buf[100];
+		sprintf(buf, "%.1f-%.1f", x_min, x_max);
+		p.second->Write(buf);
+	}
+
 	// clean up
 	gDirectory = d_top;
 }
@@ -409,8 +447,8 @@ int main()
 	}
 
 	// TODO
-	if (cfg.input_files.size() > 5)
-		cfg.input_files.resize(5);
+	if (cfg.input_files.size() > 4)
+		cfg.input_files.resize(4);
 
 	printf("-------------------- config ----------------------\n");
 	cfg.Print(true);
