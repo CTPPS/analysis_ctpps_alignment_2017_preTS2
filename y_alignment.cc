@@ -39,12 +39,11 @@ int main()
 		double sh_x;
 	};
 
-	// TODO: update slope parameters
 	vector<RPData> rpData = {
-		{ "L_2_F", 23,   "sector 45", -0.03, -42.05 },
-		{ "L_1_F",  3,   "sector 45", -0.03, -3.7 },
-		{ "R_1_F", 103, "sector 56", -0.015, -2.75 },
-		{ "R_2_F", 123, "sector 56", -0.015, -42.05 }
+		{ "L_2_F", 23,  "sector 45", 0.10, -42.05 },
+		{ "L_1_F",  3,  "sector 45", 0.11, -3.7 },
+		{ "R_1_F", 103, "sector 56", 0.18, -2.75 },
+		{ "R_2_F", 123, "sector 56", 0.15, -42.05 }
 	};
 
 	// get input
