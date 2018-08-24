@@ -15,6 +15,8 @@
 
 using namespace std;
 
+bool debug_slope_fits = true;
+
 //----------------------------------------------------------------------------------------------------
 
 string ReplaceAll(const string &str, const string &from, const string &to)
@@ -33,7 +35,21 @@ string ReplaceAll(const string &str, const string &from, const string &to)
 
 //----------------------------------------------------------------------------------------------------
 
-TF1 *ff = new TF1("ff", "[0] + [1]*x");
+TF1 *ff_pol1 = new TF1("ff_pol1", "[0] + [1]*x");
+TF1 *ff_pol2 = new TF1("ff_pol2", "[0] + [1]*x + [2]*x*x");
+
+//----------------------------------------------------------------------------------------------------
+
+void FitProfile(TProfile *p, double &sl, double &sl_unc)
+{
+	ff_pol1->SetParameter(0., 0.);
+	p->Fit(ff_pol1, "Q", "", 1., 7.);
+
+	sl = ff_pol1->GetParameter(1);
+	sl_unc = ff_pol1->GetParError(1);
+}
+
+//----------------------------------------------------------------------------------------------------
 
 TGraphErrors* BuildGraphFromDirectory(TDirectory *dir)
 {
@@ -53,15 +69,131 @@ TGraphErrors* BuildGraphFromDirectory(TDirectory *dir)
 		//printf("  %s, %.3f, %.3f\n", name.c_str(), x_min, x_max);
 
 		TProfile *p = (TProfile *) k->ReadObj();
-		ff->SetParameter(0., 0.);
-		p->Fit(ff, "Q", "");
+		double sl=0., sl_unc=0.;
+		FitProfile(p, sl, sl_unc);
+
+		if (debug_slope_fits)
+			p->Write(name.c_str());
 
 		int idx = g->GetN();
-		g->SetPoint(idx, (x_max + x_min)/2., ff->GetParameter(1));
-		g->SetPointError(idx, (x_max - x_min)/2., ff->GetParError(1));
+		g->SetPoint(idx, (x_max + x_min)/2., sl);
+		g->SetPointError(idx, (x_max - x_min)/2., sl_unc);
 	}
 
 	return g;
+}
+
+//----------------------------------------------------------------------------------------------------
+
+void DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &range_ref, const SelectionRange &range_test,
+		double sh_min, double sh_max, double &sh_best, double &sh_best_unc)
+{
+	// book match-quality graphs
+	TGraph *g_n_points = new TGraph(); g_n_points->SetName("g_n_points"); g_n_points->SetTitle(";sh;N");
+	TGraph *g_chi_sq = new TGraph(); g_chi_sq->SetName("g_chi_sq"); g_chi_sq->SetTitle(";sh;S2");
+	TGraph *g_chi_sq_norm = new TGraph(); g_chi_sq_norm->SetName("g_chi_sq_norm"); g_chi_sq_norm->SetTitle(";sh;S2 / N");
+
+	// optimalisation variables
+	double S2_norm_best = 1E100;
+
+	double sh_step = 0.025;	// mm
+	for (double sh = sh_min; sh <= sh_max; sh += sh_step)
+	{
+		// calculate chi^2
+		int n_points = 0;
+		double S2 = 0.;
+
+		for (int i = 0; i < g_ref->GetN(); ++i)
+		{
+			const double x_ref = g_ref->GetX()[i];
+			const double y_ref = g_ref->GetY()[i];
+			const double y_ref_unc = g_ref->GetErrorY(i);
+
+			const double x_test = x_ref - sh;
+
+			if (x_ref < range_ref.x_min || x_ref > range_ref.x_max || x_test < range_test.x_min || x_test > range_test.x_max)
+				continue;
+
+			const double y_test = g_test->Eval(x_test);
+
+			int js = -1, jg = -1;
+			double xs = -1E100, xg = +1E100;
+			for (int j = 0; j < g_test->GetN(); ++j)
+			{
+				const double x = g_test->GetX()[j];
+				if (x < x_test && x > xs)
+				{
+					xs = x;
+					js = j;
+				}
+				if (x > x_test && x < xg)
+				{
+					xg = x;
+					jg = j;
+				}
+			}
+			if (jg == -1)
+				jg = js;
+
+			const double y_test_unc = ( g_test->GetErrorY(js) + g_test->GetErrorY(jg) ) / 2.;
+
+			n_points++;
+			S2 += pow(y_test - y_ref, 2.) / (y_ref_unc*y_ref_unc + y_test_unc*y_test_unc);
+		}
+
+		// update best result
+		double S2_norm = S2 / n_points;
+
+		if (S2_norm < S2_norm_best)
+		{
+			S2_norm_best = S2_norm;
+			sh_best = sh;
+		}
+
+		// fill in graphs
+		int idx = g_n_points->GetN();
+		g_n_points->SetPoint(idx, sh, n_points);
+		g_chi_sq->SetPoint(idx, sh, S2);
+		g_chi_sq_norm->SetPoint(idx, sh, S2_norm);
+	}
+
+	// determine uncertainty - TODO: verify
+	double fit_range = 0.5;	// mm
+	g_chi_sq->Fit(ff_pol2, "Q", "", sh_best - fit_range, sh_best + fit_range);
+	sh_best_unc = 1. / sqrt(ff_pol2->GetParameter(2));
+
+	// print results
+	printf("        sh_best = (%.3f +- %.3f) mm\n", sh_best, sh_best_unc);
+
+	// save graphs
+	g_n_points->Write();
+	g_chi_sq->Write();
+	g_chi_sq_norm->Write();
+
+	// save results
+	TGraph *g_results = new TGraph();
+	g_results->SetName("g_results");
+	g_results->SetPoint(0, 0, sh_best);
+	g_results->SetPoint(1, 0, sh_best_unc);
+	g_results->Write();
+
+	// save debug canvas
+	TGraphErrors *g_test_shifted = new TGraphErrors(*g_test);
+	for (int i = 0; i < g_test_shifted->GetN(); ++i)
+	{
+		g_test_shifted->GetX()[i] += sh_best;
+	}
+
+	TCanvas *c_cmp = new TCanvas("c_cmp");
+	g_ref->SetLineColor(1);
+	g_ref->Draw("apl");
+
+	g_test->SetLineColor(6);
+	g_test->Draw("pl");
+
+	g_test_shifted->SetLineColor(2);
+	g_test_shifted->Draw("pl");
+	c_cmp->Write();
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -86,13 +218,14 @@ int main()
 		unsigned int id;
 		string sectorName;
 		string position;
+		double x_min_ref, x_min_test;
 	};
 
 	vector<RPData> rpData = {
-		{ "L_2_F", 23,  "sector 45", "F" },
-		{ "L_1_F", 3,   "sector 45", "N" },
-		{ "R_1_F", 103, "sector 56", "N" },
-		{ "R_2_F", 123, "sector 56", "F" }
+		{ "L_2_F", 23,  "sector 45", "F", 5., 47. },
+		{ "L_1_F", 3,   "sector 45", "N", 5., 9. },
+		{ "R_1_F", 103, "sector 56", "N", 4., 7. },
+		{ "R_2_F", 123, "sector 56", "F", 4., 46. }
 	};
 
 	// get input
@@ -131,21 +264,32 @@ int main()
 		{
 			printf("* %s\n", rpd.name.c_str());
 
-			TDirectory *rp_dir = ref_dir->mkdir(rpd.name.c_str());
-			
-			// TODO
-			//TDirectory *d_ref = (TDirectory *) f_ref->Get((rpd.sectorName + "/near_far/p_y_diffFN_vs_y_" + rpd.position + ", x slices").c_str());
+			// get input
+			TDirectory *d_ref = (TDirectory *) f_ref->Get((rpd.sectorName + "/near_far/p_y_diffFN_vs_y_" + rpd.position + ", x slices").c_str());
 			TDirectory *d_test = (TDirectory *) f_in->Get((rpd.sectorName + "/near_far/p_y_diffFN_vs_y_" + rpd.position + ", x slices").c_str());
 
+			// prepare output directory
+			TDirectory *rp_dir = ref_dir->mkdir(rpd.name.c_str());
+
+			// build graphs for matching
+			gDirectory = rp_dir->mkdir("fits_ref");
+			TGraphErrors *g_ref = BuildGraphFromDirectory(d_ref);
+			gDirectory = rp_dir->mkdir("fits_test");
 			TGraphErrors *g_test = BuildGraphFromDirectory(d_test);
 
 			gDirectory = rp_dir;
+			g_ref->Write("g_ref");
 			g_test->Write("g_test");
 
-			// TODO: do match
+			// do match
+			const auto &shift_range = cfg.matching_1d_shift_ranges[rpd.id];
+			double sh=0., sh_unc=0.;
+			DoMatch(g_ref, g_test,
+				cfg_ref.alignment_x_meth_o_ranges[rpd.id], cfg.alignment_x_meth_o_ranges[rpd.id],
+				shift_range.x_min, shift_range.x_max, sh, sh_unc);
 
-			// TODO: save results
-			//results[ref + ", method y"][rpd.id] = AlignmentResult(r_method_y);
+			// save results
+			results[ref + ", method o"][rpd.id] = AlignmentResult(sh, sh_unc);
 		}
 		
 		delete f_ref;
