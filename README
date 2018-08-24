@@ -18,9 +18,15 @@ ANALYSIS
 
 2) Horizontal alignment
 
-2.1) Run matching
+2.0) Match data from alignment fill 5685 to data from alignment fill 5912 - already done, alignment constants store in config files.
+
+2.1) Run matching (methods "x" and "y", wrt. alig/fill_5685)
 	./run match data/phys/fill_*/xangle*/*/ -submit
 
 3) Vertical and tilt alignment
 
-3.1)
+3.1) Method "fit"
+	./run y_alignment data/phys/fill_*/xangle*/*/ -submit
+
+3.2) Method "s-curve"
+	./run y_alignment_alt data/phys/fill_*/xangle*/*/ -submit
