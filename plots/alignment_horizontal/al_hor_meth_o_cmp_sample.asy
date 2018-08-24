@@ -8,15 +8,15 @@ InitDataSets();
 
 //----------------------------------------------------------------------------------------------------
 
-string sample = "DoubleEG";
+string sample_labels[];
+pen sample_pens[];
+sample_labels.push("ZeroBias"); sample_pens.push(blue);
+sample_labels.push("DoubleEG"); sample_pens.push(red);
+sample_labels.push("SingleMuon"); sample_pens.push(heavygreen);
 
-real mfa = 0.3;
+real sfa = 0.3;
 
-string methods[];
-pen m_pens[];
-//methods.push("method x"); m_pens.push(blue);
-methods.push("method y"); m_pens.push(red);
-methods.push("method o"); m_pens.push(heavygreen);
+string method = "method o";
 
 //int xangle = 120;
 //string ref_label = "data_alig_fill_5685_xangle_120_DS1";
@@ -53,11 +53,13 @@ xTicksDef = LeftTicks(rotate(90)*Label(""), TickLabels, Step=1, step=0);
 
 NewPad(false, 1, 1);
 
-AddToLegend("(" + sample + ")");
+AddToLegend("(" + method + ")");
 AddToLegend(format("(xangle %u)", xangle));
 
-for (int mi : methods.keys)
-	AddToLegend(methods[mi], mCi + 3pt + m_pens[mi]);
+for (int sai : sample_labels.keys)
+{
+	AddToLegend(sample_labels[sai], sample_pens[sai]);
+}
 
 AttachLegend();
 
@@ -99,48 +101,29 @@ for (int rpi : rps.keys)
 			write("        " + dataset);
 	
 			mark m = mCi+3pt;
-
-			real x = fdi;
-
-			for (int mi : methods.keys)
-			{
-				string method = methods[mi];
-
-				RootObject obj;
-				if (method == "method x" || method == "method y")
-				{
-					string f = topDir + dataset + "/" + sample + "/match.root";	
-					obj = RootGetObject(f, ref_label + "/" + rps[rpi] + "/method y/g_results", error = false);
-				}
-				if (method == "method o")
-				{
-					string f = topDir + dataset + "/" + sample + "/x_alignment_meth_o.root";	
-					obj = RootGetObject(f, ref_label + "/" + rps[rpi] + "/g_results", error = false);
-				}
-
-				if (obj.valid)
-				{
-					real bsh = -inf, bsh_unc = -inf;
-					real ax[] = { 0. };
-					real ay[] = { 0. };
-					if (method == "method x" || method == "method y")
-					{
-						obj.vExec("GetPoint", 0, ax, ay); bsh = ay[0];
-						obj.vExec("GetPoint", 1, ax, ay); bsh_unc = ay[0];
-					}
-					if (method == "method o")
-					{
-						obj.vExec("GetPoint", 0, ax, ay); bsh = ax[0]; bsh_unc = ay[0];
-					}
-
-					bool pointValid = (bsh == bsh && bsh_unc == bsh_unc && fabs(bsh) > 0.01);
-					pen p = m_pens[mi];
 	
-					if (pointValid)
-					{
-						draw((x, bsh), m + p);
-						draw((x, bsh-bsh_unc)--(x, bsh+bsh_unc), p);
-					}
+			for (int sai : sample_labels.keys)
+			{
+				string f = topDir + dataset + "/" + sample_labels[sai] + "/x_alignment_meth_o.root";	
+				RootObject obj = RootGetObject(f, ref_label + "/" + rps[rpi] + "/g_results", error = false);
+	
+				if (!obj.valid)
+					continue;
+	
+				real ax[] = { 0. };
+				real ay[] = { 0. };
+				obj.vExec("GetPoint", 0, ax, ay); real bsh = ax[0], bsh_unc = ay[0];
+
+				real x = fdi + sai * sfa / (sample_labels.length - 1) - sfa/2;
+
+				bool pointValid = (bsh == bsh && bsh_unc == bsh_unc && fabs(bsh) > 0.01);
+	
+				pen p = sample_pens[sai];
+	
+				if (pointValid)
+				{
+					draw((x, bsh), m + p);
+					draw((x, bsh-bsh_unc)--(x, bsh+bsh_unc), p);
 				}
 			}
 		}
