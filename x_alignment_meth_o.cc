@@ -157,7 +157,7 @@ void DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ra
 		g_chi_sq_norm->SetPoint(idx, sh, S2_norm);
 	}
 
-	// determine uncertainty - TODO: verify
+	// determine uncertainty
 	double fit_range = 0.5;	// mm
 	g_chi_sq->Fit(ff_pol2, "Q", "", sh_best - fit_range, sh_best + fit_range);
 	sh_best_unc = 1. / sqrt(ff_pol2->GetParameter(2));
@@ -173,8 +173,9 @@ void DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ra
 	// save results
 	TGraph *g_results = new TGraph();
 	g_results->SetName("g_results");
-	g_results->SetPoint(0, 0, sh_best);
-	g_results->SetPoint(1, 0, sh_best_unc);
+	g_results->SetPoint(0, sh_best, sh_best_unc);
+	g_results->SetPoint(1, range_ref.x_min, range_ref.x_max);
+	g_results->SetPoint(2, range_test.x_min, range_test.x_max);
 	g_results->Write();
 
 	// save debug canvas
@@ -218,14 +219,13 @@ int main()
 		unsigned int id;
 		string sectorName;
 		string position;
-		double x_min_ref, x_min_test;
 	};
 
 	vector<RPData> rpData = {
-		{ "L_2_F", 23,  "sector 45", "F", 5., 47. },
-		{ "L_1_F", 3,   "sector 45", "N", 5., 9. },
-		{ "R_1_F", 103, "sector 56", "N", 4., 7. },
-		{ "R_2_F", 123, "sector 56", "F", 4., 46. }
+		{ "L_2_F", 23,  "sector 45", "F" },
+		{ "L_1_F", 3,   "sector 45", "N" },
+		{ "R_1_F", 103, "sector 56", "N" },
+		{ "R_2_F", 123, "sector 56", "F" }
 	};
 
 	// get input
