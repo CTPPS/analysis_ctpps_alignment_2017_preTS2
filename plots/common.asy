@@ -1,10 +1,9 @@
 real GetMeanHorizontalAlignment(string rp)
 {
-	// TODO: update
-	if (rp == "L_2_F") return -42.0;
-	if (rp == "L_1_F") return -3.6;
+	if (rp == "L_2_F") return -41.85;
+	if (rp == "L_1_F") return -3.7;
 	if (rp == "R_1_F") return -2.8;
-	if (rp == "R_2_F") return -41.9;
+	if (rp == "R_2_F") return -42.1;
 
 	return 0;
 }

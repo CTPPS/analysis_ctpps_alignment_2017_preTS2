@@ -1,6 +1,8 @@
 import root;
 import pad_layout;
 
+include "../common.asy";
+
 string topDir = "../../data/phys/";
 
 include "../fills_samples.asy";
@@ -72,17 +74,6 @@ for (int rpi : rps.keys)
 	NewRow();
 
 	NewPad("fill", "horizontal shift$\ung{mm}$");
-
-	if (rp_shift_m[rpi] != 0)
-	{
-		real sh = rp_shift_m[rpi], unc = 0.15;
-		real fill_min = -1, fill_max = fill_data.length;
-		draw((fill_min, sh+unc)--(fill_max, sh+unc), black+dashed);
-		draw((fill_min, sh)--(fill_max, sh), black+1pt);
-		draw((fill_min, sh-unc)--(fill_max, sh-unc), black+dashed);
-		draw((fill_max, sh-2*unc), invisible);
-		draw((fill_max, sh+2*unc), invisible);
-	}
 	
 	for (int fdi : fill_data.keys)
 	{
@@ -130,7 +121,11 @@ for (int rpi : rps.keys)
 		}
 	}
 
-	xlimits(-1, fill_data.length, Crop);
+	real y_mean = GetMeanHorizontalAlignment(rps[rpi]);
+	draw((-1, y_mean)--(fill_data.length, y_mean), black);
+
+	//xlimits(-1, fill_data.length, Crop);
+	limits((-1, y_mean-1), (fill_data.length, y_mean+1), Crop);
 
 	AttachLegend("{\SetFontSizesXX " + rp_labels[rpi] + "}");
 }
