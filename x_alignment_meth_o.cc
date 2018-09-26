@@ -9,6 +9,7 @@
 #include "TF1.h"
 #include "TProfile.h"
 #include "TKey.h"
+#include "TSpline.h"
 
 #include <vector>
 #include <string>
@@ -40,18 +41,35 @@ TF1 *ff_pol2 = new TF1("ff_pol2", "[0] + [1]*x + [2]*x*x");
 
 //----------------------------------------------------------------------------------------------------
 
-void FitProfile(TProfile *p, double &sl, double &sl_unc)
+int FitProfile(TProfile *p, bool aligned, double &sl, double &sl_unc)
 {
+	if (p->GetEntries() < 100)
+		return 1;
+
+	for (int bi = 1; bi <= p->GetNbinsX(); ++bi)
+	{
+		if (p->GetBinEntries(bi) < 4)
+		{
+			p->SetBinContent(bi, 0.);
+			p->SetBinError(bi, 0.);
+		}
+	}
+
+	double x_min = 1., x_max = 7.;
+	if (aligned) x_min = -3., x_max = +3.;	// TODO: validate this choice
+
 	ff_pol1->SetParameter(0., 0.);
-	p->Fit(ff_pol1, "Q", "", 1., 7.);
+	p->Fit(ff_pol1, "Q", "", x_min, x_max);
 
 	sl = ff_pol1->GetParameter(1);
 	sl_unc = ff_pol1->GetParError(1);
+
+	return 0;
 }
 
 //----------------------------------------------------------------------------------------------------
 
-TGraphErrors* BuildGraphFromDirectory(TDirectory *dir)
+TGraphErrors* BuildGraphFromDirectory(TDirectory *dir, bool aligned)
 {
 	TGraphErrors *g = new TGraphErrors();
 
@@ -69,8 +87,11 @@ TGraphErrors* BuildGraphFromDirectory(TDirectory *dir)
 		//printf("  %s, %.3f, %.3f\n", name.c_str(), x_min, x_max);
 
 		TProfile *p = (TProfile *) k->ReadObj();
+
 		double sl=0., sl_unc=0.;
-		FitProfile(p, sl, sl_unc);
+		int fr = FitProfile(p, aligned, sl, sl_unc);
+		if (fr != 0)
+			continue;
 
 		if (debug_slope_fits)
 			p->Write(name.c_str());
@@ -85,9 +106,16 @@ TGraphErrors* BuildGraphFromDirectory(TDirectory *dir)
 
 //----------------------------------------------------------------------------------------------------
 
-void DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &range_ref, const SelectionRange &range_test,
+int DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &range_ref, const SelectionRange &range_test,
 		double sh_min, double sh_max, double &sh_best, double &sh_best_unc)
 {
+	// require minimal number of points
+	if (g_ref->GetN() < 5 || g_test->GetN() < 5)
+		return 1;
+
+	// make spline from g_ref
+	TSpline3 *s_ref = new TSpline3("s_ref", g_ref->GetX(), g_ref->GetY(), g_ref->GetN());
+
 	// book match-quality graphs
 	TGraph *g_n_points = new TGraph(); g_n_points->SetName("g_n_points"); g_n_points->SetTitle(";sh;N");
 	TGraph *g_chi_sq = new TGraph(); g_chi_sq->SetName("g_chi_sq"); g_chi_sq->SetTitle(";sh;S2");
@@ -96,37 +124,37 @@ void DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ra
 	// optimalisation variables
 	double S2_norm_best = 1E100;
 
-	double sh_step = 0.025;	// mm
+	double sh_step = 0.010;	// mm
 	for (double sh = sh_min; sh <= sh_max; sh += sh_step)
 	{
 		// calculate chi^2
 		int n_points = 0;
 		double S2 = 0.;
 
-		for (int i = 0; i < g_ref->GetN(); ++i)
+		for (int i = 0; i < g_test->GetN(); ++i)
 		{
-			const double x_ref = g_ref->GetX()[i];
-			const double y_ref = g_ref->GetY()[i];
-			const double y_ref_unc = g_ref->GetErrorY(i);
+			const double x_test = g_test->GetX()[i];
+			const double y_test = g_test->GetY()[i];
+			const double y_test_unc = g_test->GetErrorY(i);
 
-			const double x_test = x_ref - sh;
+			const double x_ref = x_test + sh;
 
 			if (x_ref < range_ref.x_min || x_ref > range_ref.x_max || x_test < range_test.x_min || x_test > range_test.x_max)
 				continue;
 
-			const double y_test = g_test->Eval(x_test);
+			const double y_ref = s_ref->Eval(x_ref);
 
 			int js = -1, jg = -1;
 			double xs = -1E100, xg = +1E100;
-			for (int j = 0; j < g_test->GetN(); ++j)
+			for (int j = 0; j < g_ref->GetN(); ++j)
 			{
-				const double x = g_test->GetX()[j];
-				if (x < x_test && x > xs)
+				const double x = g_ref->GetX()[j];
+				if (x < x_ref && x > xs)
 				{
 					xs = x;
 					js = j;
 				}
-				if (x > x_test && x < xg)
+				if (x > x_ref && x < xg)
 				{
 					xg = x;
 					jg = j;
@@ -135,10 +163,11 @@ void DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ra
 			if (jg == -1)
 				jg = js;
 
-			const double y_test_unc = ( g_test->GetErrorY(js) + g_test->GetErrorY(jg) ) / 2.;
+			const double y_ref_unc = ( g_ref->GetErrorY(js) + g_ref->GetErrorY(jg) ) / 2.;
 
 			n_points++;
-			S2 += pow(y_test - y_ref, 2.) / (y_ref_unc*y_ref_unc + y_test_unc*y_test_unc);
+			const double S2_inc = pow(y_test - y_ref, 2.) / (y_ref_unc*y_ref_unc + y_test_unc*y_test_unc);
+			S2 += S2_inc;
 		}
 
 		// update best result
@@ -195,6 +224,11 @@ void DoMatch(TGraphErrors *g_ref, TGraphErrors *g_test, const SelectionRange &ra
 	g_test_shifted->SetLineColor(2);
 	g_test_shifted->Draw("pl");
 	c_cmp->Write();
+
+	// clean up
+	delete s_ref;
+
+	return 0;
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -238,7 +272,7 @@ int main()
 	AlignmentResultsCollection results;
 
 	// processing
-	for (auto ref : cfg.matching_1d_reference_datasets)
+	for (auto ref : cfg.matching_reference_datasets)
 	{
 		/*
 		if (ref == "default")
@@ -273,16 +307,16 @@ int main()
 
 			// build graphs for matching
 			gDirectory = rp_dir->mkdir("fits_ref");
-			TGraphErrors *g_ref = BuildGraphFromDirectory(d_ref);
+			TGraphErrors *g_ref = BuildGraphFromDirectory(d_ref, true);
 			gDirectory = rp_dir->mkdir("fits_test");
-			TGraphErrors *g_test = BuildGraphFromDirectory(d_test);
+			TGraphErrors *g_test = BuildGraphFromDirectory(d_test, false);
 
 			gDirectory = rp_dir;
 			g_ref->Write("g_ref");
 			g_test->Write("g_test");
 
 			// do match
-			const auto &shift_range = cfg.matching_1d_shift_ranges[rpd.id];
+			const auto &shift_range = cfg.matching_shift_ranges[rpd.id];
 			double sh=0., sh_unc=0.;
 			DoMatch(g_ref, g_test,
 				cfg_ref.alignment_x_meth_o_ranges[rpd.id], cfg.alignment_x_meth_o_ranges[rpd.id],

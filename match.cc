@@ -460,7 +460,7 @@ int main()
 	AlignmentResultsCollection results;
 
 	// processing
-	for (auto ref : cfg.matching_1d_reference_datasets)
+	for (auto ref : cfg.matching_reference_datasets)
 	{
 		/*
 		if (ref == "default")
@@ -505,7 +505,7 @@ int main()
 
 			gDirectory = rp_dir;
 			double r_method_x = 0., r_method_y = 0.;
-			const auto &shift_range = cfg.matching_1d_shift_ranges[rpd.id];
+			const auto &shift_range = cfg.matching_shift_ranges[rpd.id];
 			DoMatch(rpd.id,
 				g_test, cfg.matching_1d_ranges[rpd.id],
 				g_ref, cfg_ref.matching_1d_ranges[rpd.id],

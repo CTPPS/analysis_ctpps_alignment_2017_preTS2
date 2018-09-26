@@ -119,6 +119,26 @@ int main()
 
 		results["y_alignment_alt"][ad.rp_id_N] = AlignmentResult(0., 0., sh_y_N, y0_N_unc, 0., 0.);
 		results["y_alignment_alt"][ad.rp_id_F] = AlignmentResult(0., 0., sh_y_F, y0_F_unc, 0., 0.);
+
+		for (const string rp : { "N", "F"} )
+		{
+			TDirectory *rp_dir = (TDirectory *) arm_dir->Get(rp.c_str());
+			gDirectory = rp_dir;
+
+			TGraph *g_results = new TGraph();
+
+			const double y0 = (rp == "N") ? y0_N : y0_F;
+			const double y0_unc = (rp == "N") ? y0_N_unc : y0_F_unc;
+			const double yd = (rp == "N") ? yd_N : yd_F;
+			const double yd_unc = (rp == "N") ? yd_N_unc : yd_F_unc;
+			const double sh_y = (rp == "N") ? sh_y_N : sh_y_F;
+
+			g_results->SetPoint(0, y0, y0_unc);
+			g_results->SetPoint(1, yd, yd_unc);
+			g_results->SetPoint(2, sh_y, y0_unc);
+
+			g_results->Write("g_results");
+		}
 	}
 
 	// write results

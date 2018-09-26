@@ -208,10 +208,10 @@ SectorData::SectorData(const string _name, unsigned int _rpIdUp, unsigned int _r
 	p_y_diffFN_vs_y_F = new TProfile("", ";y_{F};y_{F} - y_{N}", 200, -10., 10.);
 
 	for (int i = 0; i < scfg.nr_x_slice_n; ++i)
-		x_slice_p_y_diffFN_vs_y_N[i] = new TProfile("", ";y_{N};x_{F} - y_{N}", 100, 0., 20.);
+		x_slice_p_y_diffFN_vs_y_N[i] = new TProfile("", ";y_{N};x_{F} - y_{N}", 100, -10., +10.);
 
 	for (int i = 0; i < scfg.fr_x_slice_n; ++i)
-		x_slice_p_y_diffFN_vs_y_F[i] = new TProfile("", ";y_{F};x_{F} - y_{N}", 100, 0., 20.);
+		x_slice_p_y_diffFN_vs_y_F[i] = new TProfile("", ";y_{F};x_{F} - y_{N}", 100, -10., +10.);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -314,11 +314,8 @@ unsigned int SectorData::Process(const vector<CTPPSLocalTrackLite> &tracks)
 
 				p_x_diffFN_vs_x_N->Fill(trUp.getX(), trDw.getX() - trUp.getX());
 
-				// TODO: remove hardcoded configuration
-				double x_min = 0., x_max = 0.;
-				if (name == "sector 45") { x_min = 7.8; x_max = 16.; }
-				if (name == "sector 56") { x_max = 5.8; x_max = 15.; }
-				if (trUp.getX() > x_min && trUp.getX() < x_max)
+				const auto &range = cfg.alignment_y_alt_ranges[rpIdUp];
+				if (trUp.getX() > range.x_min && trUp.getX() < range.x_max)
 				{
 					p_y_diffFN_vs_y_N->Fill(trUp.getY(), trDw.getY() - trUp.getY());
 					p_y_diffFN_vs_y_F->Fill(trDw.getY(), trDw.getY() - trUp.getY());
@@ -447,8 +444,8 @@ int main()
 	}
 
 	// TODO
-	if (cfg.input_files.size() > 4)
-		cfg.input_files.resize(4);
+	//if (cfg.input_files.size() > 15)
+	//	cfg.input_files.resize(15);
 
 	printf("-------------------- config ----------------------\n");
 	cfg.Print(true);
@@ -475,10 +472,8 @@ int main()
 		ev_count++;
 
 		// TODO: comment out
-		/*
-		if (ev_sel_count_45 + ev_sel_count_56 > 10000)
-			break;
-		*/
+		//if (ev_sel_count_45 + ev_sel_count_56 > 10000)
+		//	break;
 
 		// get track data
 		fwlite::Handle< vector<CTPPSLocalTrackLite> > hTracks;
