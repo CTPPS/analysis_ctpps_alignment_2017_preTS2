@@ -32,27 +32,31 @@ config.sector_56.nr_x_slice_max = 22
 config.sector_56.fr_x_slice_min = 2
 config.sector_56.fr_x_slice_max = 22
 
-config.matching_1d.reference_datasets = cms.vstring("data/alig/fill_5912/xangle_120/DS1")
+config.matching.reference_datasets = cms.vstring("data/alig/fill_5912/xangle_120/DS1")
+
+config.matching.rp_L_2_F.sh_min = -0.5
+config.matching.rp_L_2_F.sh_max = +0.5
+
+config.matching.rp_L_1_F.sh_min = -0.5
+config.matching.rp_L_1_F.sh_max = +0.5
+
+config.matching.rp_R_1_F.sh_min = -0.5
+config.matching.rp_R_1_F.sh_max = +0.5
+
+config.matching.rp_R_2_F.sh_min = -0.5
+config.matching.rp_R_2_F.sh_max = +0.5
 
 config.matching_1d.rp_L_2_F.x_min = 2.3
 config.matching_1d.rp_L_2_F.x_max = 21
-config.matching_1d.rp_L_2_F.sh_min = -0.5
-config.matching_1d.rp_L_2_F.sh_max = +0.5
 
 config.matching_1d.rp_L_1_F.x_min = 2.5
 config.matching_1d.rp_L_1_F.x_max = 21
-config.matching_1d.rp_L_1_F.sh_min = -0.5
-config.matching_1d.rp_L_1_F.sh_max = +0.5
 
 config.matching_1d.rp_R_1_F.x_min = 2.3
 config.matching_1d.rp_R_1_F.x_max = 21
-config.matching_1d.rp_R_1_F.sh_min = -0.5
-config.matching_1d.rp_R_1_F.sh_max = +0.5
 
 config.matching_1d.rp_R_2_F.x_min = 2.5
 config.matching_1d.rp_R_2_F.x_max = 21
-config.matching_1d.rp_R_2_F.sh_min = -0.5
-config.matching_1d.rp_R_2_F.sh_max = +0.5
 
 config.x_alignment_meth_o.rp_L_2_F.x_min = 5.
 config.x_alignment_meth_o.rp_L_2_F.x_max = 12.
