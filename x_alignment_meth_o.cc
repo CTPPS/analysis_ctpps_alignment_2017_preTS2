@@ -41,7 +41,7 @@ TF1 *ff_pol2 = new TF1("ff_pol2", "[0] + [1]*x + [2]*x*x");
 
 //----------------------------------------------------------------------------------------------------
 
-int FitProfile(TProfile *p, bool aligned, double &sl, double &sl_unc)
+int FitProfile(TProfile *p, bool /*aligned*/, double &sl, double &sl_unc)
 {
 	if (p->GetEntries() < 100)
 		return 1;
@@ -55,8 +55,7 @@ int FitProfile(TProfile *p, bool aligned, double &sl, double &sl_unc)
 		}
 	}
 
-	double x_min = 1., x_max = 7.;
-	if (aligned) x_min = -3., x_max = +3.;	// TODO: validate this choice
+	double x_min = 1.5, x_max = 6.0;
 
 	ff_pol1->SetParameter(0., 0.);
 	p->Fit(ff_pol1, "Q", "", x_min, x_max);
