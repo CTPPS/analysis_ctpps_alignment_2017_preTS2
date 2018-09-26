@@ -14,7 +14,7 @@ real mfa = 0.3;
 
 string methods[];
 pen m_pens[];
-//methods.push("method x"); m_pens.push(blue);
+methods.push("method x"); m_pens.push(blue);
 methods.push("method y"); m_pens.push(red);
 methods.push("method o"); m_pens.push(heavygreen);
 
@@ -100,8 +100,6 @@ for (int rpi : rps.keys)
 	
 			mark m = mCi+3pt;
 
-			real x = fdi;
-
 			for (int mi : methods.keys)
 			{
 				string method = methods[mi];
@@ -110,7 +108,7 @@ for (int rpi : rps.keys)
 				if (method == "method x" || method == "method y")
 				{
 					string f = topDir + dataset + "/" + sample + "/match.root";	
-					obj = RootGetObject(f, ref_label + "/" + rps[rpi] + "/method y/g_results", error = false);
+					obj = RootGetObject(f, ref_label + "/" + rps[rpi] + "/" + method + "/g_results", error = false);
 				}
 				if (method == "method o")
 				{
@@ -135,6 +133,10 @@ for (int rpi : rps.keys)
 
 					bool pointValid = (bsh == bsh && bsh_unc == bsh_unc && fabs(bsh) > 0.01);
 					pen p = m_pens[mi];
+			
+					real x = fdi;
+					if (methods.length > 1)
+						x += mi * mfa / (methods.length - 1) - mfa/2;
 	
 					if (pointValid)
 					{

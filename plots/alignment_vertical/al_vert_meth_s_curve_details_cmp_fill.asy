@@ -3,6 +3,14 @@ import pad_layout;
 
 string topDir = "../../data/phys/";
 
+string datasets[] = {
+	"fill_5839/xangle_150/DoubleEG",
+	"fill_5974/xangle_150/DoubleEG",
+	"fill_6090/xangle_150/DoubleEG",
+	"fill_6155/xangle_150/DoubleEG",
+	"fill_6192/xangle_150/DoubleEG",
+};
+
 string plots[], p_arms[], p_rps[], p_x_axis[], p_y_axis[];
 plots.push("sector 45/N/p_y_diffFN_vs_y"); p_arms.push("sector 45"); p_rps.push("near"); p_x_axis.push("y_{LN}\ung{mm}"); p_y_axis.push("y_{LF} - y_{LN}\ung{mm}");
 plots.push("sector 45/F/p_y_diffFN_vs_y"); p_arms.push("sector 45"); p_rps.push("far"); p_x_axis.push("y_{LF}\ung{mm}"); p_y_axis.push("y_{LF} - y_{LN}\ung{mm}");
@@ -13,23 +21,6 @@ xSizeDef = 9cm;
 
 xTicksDef = LeftTicks(1., 0.5);
 yTicksDef = RightTicks(0.1, 0.05);
-
-string datasets[] = {
-	"fill_5839/xangle_150/DoubleEG",
-	"fill_5974/xangle_150/DoubleEG",
-	"fill_6090/xangle_150/DoubleEG",
-	"fill_6155/xangle_150/DoubleEG",
-	"fill_6192/xangle_150/DoubleEG",
-};
-
-string datasets[] = {
-	"fill_5839/xangle_150/ZeroBias",
-	"fill_6060/xangle_150/ZeroBias",
-	"fill_6084/xangle_150/ZeroBias",
-	"fill_6097/xangle_150/ZeroBias",
-	"fill_6147/xangle_150/ZeroBias",
-	"fill_6180/xangle_150/ZeroBias",
-};
 
 //----------------------------------------------------------------------------------------------------
 

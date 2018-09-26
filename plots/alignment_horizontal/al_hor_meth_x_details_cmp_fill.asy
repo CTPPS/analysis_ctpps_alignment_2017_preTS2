@@ -21,6 +21,8 @@ rps.push("R_2_F"); rp_labels.push("R-220-fr");
 
 ySizeDef = 5cm;
 
+xTicksDef = LeftTicks(3., 1.);
+
 //----------------------------------------------------------------------------------------------------
 
 NewPad();
@@ -36,15 +38,21 @@ for (int dsi : datasets.keys)
 
 	for (int rpi : rps.keys)
 	{
-		NewPad("$x\ung{mm}$", "std.~dev.~of $y\ung{mm}$");
-		currentpad.yTicks = RightTicks(0.5, 0.1);
+		NewPad("$x\ung{mm}$", "entries (normalised)");
+		//currentpad.yTicks = RightTicks(0.5, 0.1);
 
-		string p_base = reference + "/" + rps[rpi] + "/method y/c_cmp|";
-		draw(RootGetObject(topDir + dataset+"/match.root", p_base + "h_ref_sel"), "d0,eb", black);
-		draw(RootGetObject(topDir + dataset+"/match.root", p_base + "h_test_bef"), "d0,eb", blue);
-		draw(RootGetObject(topDir + dataset+"/match.root", p_base + "h_test_aft"), "d0,eb", red);
+		string f = topDir + dataset+"/match.root";
+		string p_base = reference + "/" + rps[rpi] + "/method x/c_cmp";
+		RootObject obj_base = RootGetObject(f, p_base, error=false);
+		if (!obj_base.valid)
+			continue;
 
-		limits((2, 0), (15, 3), Crop);
+		draw(RootGetObject(f, p_base + "|h_ref_sel"), "d0,eb", black);
+		draw(RootGetObject(f, p_base + "|h_test_bef"), "d0,eb", blue);
+		draw(RootGetObject(f, p_base + "|h_test_aft"), "d0,eb", red);
+
+		//limits((2, 0), (15, 3.5), Crop);
+		xlimits(3, 16, Crop);
 	}
 }
 

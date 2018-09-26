@@ -3,6 +3,14 @@ import pad_layout;
 
 string topDir = "../../data/phys/";
 
+string datasets[] = {
+	"fill_5839/xangle_150/DoubleEG",
+	"fill_5974/xangle_150/DoubleEG",
+	"fill_6090/xangle_150/DoubleEG",
+	"fill_6155/xangle_150/DoubleEG",
+	"fill_6192/xangle_150/DoubleEG",
+};
+
 int rp_ids[];
 string rps[], rp_labels[];
 rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr");
@@ -14,14 +22,6 @@ xSizeDef = 9cm;
 
 xTicksDef = LeftTicks(1., 0.5);
 yTicksDef = RightTicks(0.2, 0.1);
-
-string datasets[] = {
-	"fill_5839/xangle_150/DoubleEG",
-	"fill_5974/xangle_150/DoubleEG",
-	"fill_6090/xangle_150/DoubleEG",
-	"fill_6155/xangle_150/DoubleEG",
-	"fill_6192/xangle_150/DoubleEG",
-};
 
 //----------------------------------------------------------------------------------------------------
 

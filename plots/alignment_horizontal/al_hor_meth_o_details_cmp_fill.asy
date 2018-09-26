@@ -10,7 +10,7 @@ string datasets[] = {
 	"fill_5974/xangle_150/DoubleEG",
 	"fill_6090/xangle_150/DoubleEG",
 	"fill_6155/xangle_150/DoubleEG",
-	//"fill_6192/xangle_150/DoubleEG",
+	"fill_6192/xangle_150/DoubleEG",
 };
 
 string rps[], rp_labels[];
@@ -33,6 +33,8 @@ for (int dsi : datasets.keys)
 {
 	string dataset = datasets[dsi];
 
+	write("* " + dataset);
+
 	NewRow();
 	NewPadLabel(replace(dataset, "_", "\_"));
 
@@ -43,12 +45,36 @@ for (int dsi : datasets.keys)
 
 		string f = topDir + dataset+"/x_alignment_meth_o.root";
 		string p_base = reference + "/" + rps[rpi] + "/c_cmp";
+		RootObject obj_base = RootGetObject(f, p_base, error=false);
+
+		RootObject results = RootGetObject(f, reference + "/" + rps[rpi] + "/g_results", error=false);
+
+		if (!obj_base.valid || !results.valid)
+			continue;
+
+		real ax[] = {0.};
+		real ay[] = {0.};
+		results.vExec("GetPoint", 0, ax, ay); real bsh = ax[0], bsh_unc = ay[0];
+		results.vExec("GetPoint", 1, ax, ay); real x_min_ref = ax[0], x_max_ref = ay[0];
+		results.vExec("GetPoint", 2, ax, ay); real x_min_test = ax[0], x_max_test = ay[0];
+
+		TGraph_x_min = -inf; TGraph_x_max = +inf;
+		draw(RootGetObject(f, p_base + "#0"), "l", black+opacity(0.5)+dashed);
+		TGraph_x_min = x_min_ref; TGraph_x_max = x_max_ref;
 		draw(RootGetObject(f, p_base + "#0"), "p,l", black);
+
+		TGraph_x_min = -inf; TGraph_x_max = +inf;
+		draw(RootGetObject(f, p_base + "#1"), "l", blue+opacity(0.5)+dashed);	
+		TGraph_x_min = x_min_test; TGraph_x_max = x_max_test;
 		draw(RootGetObject(f, p_base + "#1"), "p,l", blue);
+
+		TGraph_x_min = -inf; TGraph_x_max = +inf;
+		draw(RootGetObject(f, p_base + "#2"), "l", red+opacity(0.5)+dashed);
+		TGraph_x_min = x_min_test + bsh; TGraph_x_max = x_max_test + bsh;
 		draw(RootGetObject(f, p_base + "#2"), "p,l", red);
 
-		xlimits(0, 15., Crop);
-		//limits((2, 0), (15, 3), Crop);
+		//xlimits(0, 15., Crop);
+		limits((0, 0.05), (15, 0.2), Crop);
 	}
 }
 
