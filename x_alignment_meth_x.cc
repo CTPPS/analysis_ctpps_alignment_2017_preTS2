@@ -79,56 +79,15 @@ void BuildHistogram(TGraph *g_input, double x_shift, const SelectionRange &range
 
 //----------------------------------------------------------------------------------------------------
 
-void BuildStdDevProfile(TGraph *g_input, double x_shift, const SelectionRange &range, TH1D *h)
-{
-	// erase previous content
-	h->Reset();
-
-	// determine bin range
-	int bi_min = h->GetXaxis()->FindBin(range.x_min + x_shift) + 1;
-	int bi_max = h->GetXaxis()->FindBin(range.x_max + x_shift) - 1;
-
-	// build stats
-	vector<Stat> stats(h->GetNbinsX(), Stat(1));
-	double *xa = g_input->GetX();
-	double *ya = g_input->GetY();
-	for (int i = 0; i < g_input->GetN(); ++i)
-	{
-		// determine bin
-		int bi = h->GetXaxis()->FindBin(xa[i] + x_shift);
-		if (bi < bi_min || bi > bi_max)
-			continue;
-
-		// fill stats
-		int idx = bi - 1;
-		stats[idx].Fill(ya[i]);
-	}
-
-	// convert stats into histogram
-	for (int bi = 1; bi <= h->GetNbinsX(); ++bi)
-	{
-		int idx = bi - 1;
-		const Stat &stat = stats[idx];
-
-		if (stat.GetEntries() < 10)
-			continue;
-
-		h->SetBinContent(bi, stat.GetStdDev(0));
-		h->SetBinError(bi, stat.GetStdDevUnc(0));
-	}
-}
-
-//----------------------------------------------------------------------------------------------------
-
 void DoMatchMethodX(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref, const SelectionRange &r_ref, double sh_min, double sh_max,
-		double &result, int bin_number)
+		double &result, double sh_ref, int bin_number)
 {
 	printf("        test range: %.3f to %.3f\n", r_test.x_min, r_test.x_max);
 	printf("        ref range: %.3f to %.3f\n", r_ref.x_min, r_ref.x_max);
 
 	// prepare reference histogram
-	TH1D *h_ref = new TH1D("h_ref", ";x",  bin_number, 2., 16.);
-	BuildHistogram(g_ref, 0., r_ref, h_ref);
+	TH1D *h_ref = new TH1D("h_ref", ";x", bin_number, 2., 16.);
+	BuildHistogram(g_ref, sh_ref, r_ref, h_ref);
 
 	// book match-quality graphs
 	TGraph *g_n_bins = new TGraph(); g_n_bins->SetName("g_n_bins"); g_n_bins->SetTitle(";sh;N");
@@ -144,7 +103,7 @@ void DoMatchMethodX(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref,
 	h_test->SetName("h_test");
 
 	// loop over shifts
-	double sh_step = 0.025;	// mm
+	double sh_step = 0.05;	// mm
 	for (double sh = sh_min; sh <= sh_max; sh += sh_step)
 	{
 		// build test histogram
@@ -192,7 +151,7 @@ void DoMatchMethodX(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref,
 
 			v_test /= S_test;
 			u_test /= S_test;
-
+			
 			double diff = v_test - v_ref;
 			double diff_unc_sq = u_ref*u_ref + u_test*u_test;
 
@@ -200,7 +159,8 @@ void DoMatchMethodX(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref,
 			S2 += diff*diff / diff_unc_sq;
 		}
 
-		double S2_norm = S2 / N_bins;
+	        double S2_norm = S2 / N_bins;
+//		S2 = S2_norm*N_bins;
 
 		if (S2_norm < S2_norm_best)
 		{
@@ -276,148 +236,48 @@ void DoMatchMethodX(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref,
 
 //----------------------------------------------------------------------------------------------------
 
-void DoMatchMethodY(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref, const SelectionRange &r_ref, double sh_min, double sh_max,
-		double &result)
-{
-	printf("        test range: %.3f to %.3f\n", r_test.x_min, r_test.x_max);
-	printf("        ref range: %.3f to %.3f\n", r_ref.x_min, r_ref.x_max);
-
-	// prepare reference histogram
-	TH1D *h_ref = new TH1D("h_ref", ";x", 140, 2., 16.);
-	BuildStdDevProfile(g_ref, 0., r_ref, h_ref);
-
-	// book match-quality graphs
-	TGraph *g_n_bins = new TGraph(); g_n_bins->SetName("g_n_bins"); g_n_bins->SetTitle(";sh;N");
-	TGraph *g_chi_sq = new TGraph(); g_chi_sq->SetName("g_chi_sq"); g_chi_sq->SetTitle(";sh;S2");
-	TGraph *g_chi_sq_norm = new TGraph(); g_chi_sq_norm->SetName("g_chi_sq_norm"); g_chi_sq_norm->SetTitle(";sh;S2 / N");
-
-	// optimalisation variables
-	double S2_norm_best = 1E100;
-	double sh_best = 0.;	// mm
-
-	// prepare container for test histograms
-	TH1D *h_test = new TH1D(*h_ref);
-	h_test->SetName("h_test");
-
-	// loop over shifts
-	double sh_step = 0.025;	// mm
-	for (double sh = sh_min; sh <= sh_max; sh += sh_step)
-	{
-		// build test histogram
-		BuildStdDevProfile(g_test, sh, r_test, h_test);
-
-		// calculate chi^2
-		int N_bins = 0;
-		double S2 = 0.;	
-
-		for (int bi = 1; bi <= h_ref->GetNbinsX(); ++bi)
-		{
-			double v_ref = h_ref->GetBinContent(bi);
-			double u_ref = h_ref->GetBinError(bi);
-
-			double v_test = h_test->GetBinContent(bi);
-			double u_test = h_test->GetBinError(bi);
-
-			if (v_ref <= 0. || v_test <= 0.)
-				continue;
-
-			double diff = v_test - v_ref;
-			double diff_unc_sq = u_ref*u_ref + u_test*u_test;
-
-			N_bins++;
-			S2 += diff*diff / diff_unc_sq;
-		}
-
-		//printf("    %.3f, %u, %.2E\n", sh, N_bins, S2);
-
-		// number of overlap bins sufficient?
-		if (N_bins < 3)
-			continue;
-
-		// update best result
-		double S2_norm = S2 / N_bins;
-
-		if (S2_norm < S2_norm_best)
-		{
-			S2_norm_best = S2_norm;
-			sh_best = sh;
-		}
-
-		// fill in graphs
-		int idx = g_n_bins->GetN();
-		g_n_bins->SetPoint(idx, sh, N_bins);
-		g_chi_sq->SetPoint(idx, sh, S2);
-		g_chi_sq_norm->SetPoint(idx, sh, S2_norm);
-	}
-
-	// determine uncertainty
-	double fit_range = 0.5;	// mm
-	g_chi_sq->Fit(ff_pol2, "Q", "", sh_best - fit_range, sh_best + fit_range);
-
-	double sh_best_unc = 1. / sqrt(ff_pol2->GetParameter(2));
-
-	// print results
-	printf("        sh_best = (%.3f +- %.3f) mm\n", sh_best, sh_best_unc);
-
-	// save histograms
-	TCanvas *c_cmp = new TCanvas("c_cmp");
-	h_ref->SetLineColor(1); h_ref->SetName("h_ref_sel"); h_ref->Draw("");
-
-	BuildStdDevProfile(g_test, 0., r_test, h_test);
-	h_test->SetLineColor(4); h_test->SetName("h_test_bef"); h_test->Draw("same");
-
-	TH1D *h_test_aft = new TH1D(*h_test);
-	BuildStdDevProfile(g_test, sh_best, r_test, h_test_aft);
-	h_test_aft->SetLineColor(2); h_test_aft->SetName("h_test_aft"); h_test_aft->Draw("same");
-	
-	c_cmp->Write();
-
-	// save graphs
-	g_n_bins->Write();
-	g_chi_sq->Write();
-	g_chi_sq_norm->Write();
-
-	// save results	
-	TGraph *g_results = new TGraph();
-	g_results->SetName("g_results");
-	g_results->SetPoint(0, 0, sh_best);
-	g_results->SetPoint(1, 0, sh_best_unc);
-	g_results->Write();
-
-	result = sh_best;
-
-	// cleaning
-	delete h_ref;
-	delete h_test;
-	delete h_test_aft;
-	delete c_cmp;
-}
-
-//----------------------------------------------------------------------------------------------------
-
 void DoMatch(unsigned int rpId,
 		TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref, const SelectionRange &r_ref,
 		double sh_min, double sh_max,
-		double &r_method_x, double &r_method_y)
+		double &r_method_x)
 {
 	TDirectory *d_top = gDirectory;
 	int bin_number = 140;
-	// method x
-	gDirectory = d_top->mkdir("method x");
-	printf("    method x\n");
-	SelectionRange r_test_x = r_test;
-        if( rpId == 3) {r_test_x.x_min = 7.45; r_test_x.x_max= 12.;}
-        else if( rpId == 23) {r_test_x.x_min = 45.95; r_test_x.x_max = 51.; bin_number = 98;}
-        else if( rpId == 103){r_test_x.x_min = 5.5; r_test_x.x_max = 10.5;}
-        else if( rpId == 123) {r_test_x.x_min = 44.8; r_test_x.x_max= 49.8; bin_number = 98;}
+	double shift = 0; // horizontal shift for aligned physics fill at low-x
 
-	DoMatchMethodX(g_test, r_test_x, g_ref, r_ref, sh_min, sh_max, r_method_x, bin_number);
-	
+	//  method x
+	SelectionRange r_test_x, r_ref_x;
+        if( rpId == 3 )
+	{
+		r_test_x.x_min = 12.; r_test_x.x_max= 17.5;
+                r_ref_x.x_min = 2.; r_ref_x.x_max=17.425;
+		shift = -3.35;		
+	}
 
-	// method y
-	gDirectory = d_top->mkdir("method y");
-	printf("    method y\n");
-	DoMatchMethodY(g_test, r_test, g_ref, r_ref, sh_min, sh_max, r_method_y);
+        else if( rpId == 23 )
+	{
+		r_test_x.x_min = 52.7; r_test_x.x_max= 63.;
+		r_ref_x.x_min = r_ref.x_min; r_ref_x.x_max = 63.;
+		shift = -42.4;	bin_number = 98;
+	}
+
+        else if( rpId == 103 )
+	{
+		r_test_x.x_min = 7.; r_test_x.x_max = 16.;
+		r_ref_x.x_min = 2.; r_ref_x.x_max=16.;
+		shift = -2.6;
+	}
+        else if( rpId == 123 )
+	{
+		r_test_x.x_min = 52.3; r_test_x.x_max = 59.; bin_number = 98;
+                r_ref_x.x_min = r_ref.x_min; r_ref_x.x_max = 59.;
+		shift = -42.6; bin_number = 98;
+	}
+
+        gDirectory = d_top->mkdir("method x");
+        printf("    method x\n");
+	DoMatchMethodX(g_test, r_test_x, g_ref, r_ref_x, sh_min, sh_max, r_method_x, shift, bin_number);
+
 
 	gDirectory = d_top;
 }
@@ -426,7 +286,7 @@ void DoMatch(unsigned int rpId,
 //----------------------------------------------------------------------------------------------------
 
 int main()
-{
+{	
 	// load config
 	if (cfg.LoadFrom("config.py") != 0)
 	{
@@ -463,24 +323,20 @@ int main()
 	AlignmentResultsCollection results;
 
 	// processing
-	for (auto ref : cfg.matching_reference_datasets)
+	for (const auto &ref : cfg.matching_reference_datasets)
 	{
-		/*
-		if (ref == "default")
-		{
-			char buf[100];
-			sprintf(buf, "data/alig/fill_6228/xangle_%u/DS1", cfg.xangle);
-			ref = buf;
-		}
-		*/
-
 		printf("-------------------- reference dataset: %s\n", ref.c_str());
 
 		const string &ref_tag = ReplaceAll(ref, "/", "_");
 		TDirectory *ref_dir = f_out->mkdir(ref_tag.c_str());
+
+		// path to sample aligned at low-x
+		const string ref_phys_ref = "data/phys/fill_5840/xangle_150/SingleMuon";
 	
-		const string ref_path = "../../../../../" + ref;
+		const string ref_path = "../../../../../" + ref_phys_ref;
 		TFile *f_ref = TFile::Open((ref_path + "/distributions.root").c_str());
+
+
 
 		Config cfg_ref;
 		cfg_ref.LoadFrom(ref_path + "/config.py");
@@ -494,7 +350,7 @@ int main()
 			TGraph *g_ref = (TGraph *) f_ref->Get((rpd.sectorName + "/after selection/" + rpd.name + "/g_y_vs_x").c_str());
 			TGraph *g_test = (TGraph *) f_in->Get((rpd.sectorName + "/after selection/" + rpd.name + "/g_y_vs_x").c_str());
 
-			if (g_ref == NULL || g_test == NULL)
+			/*if (g_ref == NULL || g_test == NULL)
 			{
 				printf("    cannot load data, skipping\n");
 				continue;
@@ -504,19 +360,19 @@ int main()
 			{
 				printf("    too little input data, skipping\n");
 				continue;
-			}
+			}*/
 
 			gDirectory = rp_dir;
-			double r_method_x = 0., r_method_y = 0.;
+			double r_method_x = 0.;
 			const auto &shift_range = cfg.matching_shift_ranges[rpd.id];
 			DoMatch(rpd.id,
-				g_test, cfg.matching_1d_ranges[rpd.id],
-				g_ref, cfg_ref.matching_1d_ranges[rpd.id],
+					g_test, cfg.matching_1d_ranges[rpd.id],
+					g_ref, cfg_ref.matching_1d_ranges[rpd.id],
 				shift_range.x_min, shift_range.x_max,
-				r_method_x, r_method_y);
+				r_method_x);
 		
 			results[ref + ", method x"][rpd.id] = AlignmentResult(r_method_x);
-			results[ref + ", method y"][rpd.id] = AlignmentResult(r_method_y);
+
 		}
 		
 		delete f_ref;
@@ -530,4 +386,5 @@ int main()
 	// clean up
 	delete f_out;
 	return 0;
+
 }
