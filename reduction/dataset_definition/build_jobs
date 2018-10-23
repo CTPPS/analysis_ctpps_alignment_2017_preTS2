@@ -6,6 +6,12 @@ streams=(
 	"ZeroBias"
 )
 
+dataset_exts=(
+	"Run2017B-PromptReco-v1/AOD"
+	"Run2017C-17Nov2017-v1/AOD"
+	"Run2017D-17Nov2017-v1/AOD"
+)
+
 template_file="job_template.py"
 check_template_file="CheckRootFile_template"
 
@@ -19,6 +25,50 @@ success_file="success"
 #----------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------
 
+function MakeInputFiles()
+{
+#	# get run list
+#	runs=""
+#	for run in `cat "$dir_out/run_ls_selection.json" | grep -Po '".*?"' | sed 's/"//g'`
+#	do
+#		if [ -n "$runs" ]
+#		then
+#			runs="$runs,"
+#		fi
+#
+#		runs="$runs$run"
+#	done
+#
+#	# reset list of files
+#	rm -f "$dir_out/input_files"
+#
+#	# get list of files
+#	for ext in ${dataset_exts[*]}
+#	do
+#		echo "dasgoclient --query \"file dataset=/$stream/$ext run in [$runs]\" >> \"$dir_out/input_files\""
+#		dasgoclient --query "file dataset=/$stream/$ext run in [$runs]" >> "$dir_out/input_files"
+#	done
+
+	# TODO: currently, there is a problem in DAS which doesn't seem to account for the "run in [...]" statement
+	# a workaround below
+
+	# reset list of files
+	rm -f "$dir_out/input_files"
+
+	runs=""
+	for run in `cat "$dir_out/run_ls_selection.json" | grep -Po '".*?"' | sed 's/"//g'`
+	do
+		for ext in ${dataset_exts[*]}
+		do
+			dasgoclient --query "file dataset=/$stream/$ext run=$run" >> "$dir_out/input_files"
+		done
+	done
+
+	# get list of files
+}
+
+#----------------------------------------------------------------------------------------------------
+
 function MakeConfig()
 {
 	(
@@ -29,13 +79,6 @@ function MakeConfig()
 		echo "cd \"$CMSSW_BASE\""
 		echo "cmsenv"
 		echo "cd \"$execute_dir\""
-		echo ""
-		echo "# EOS configuration"
-		echo "#source \"/afs/cern.ch/project/eos/installation/totem/etc/setup.sh\""
-		echo "#shopt -s expand_aliases"
-		echo ""
-		echo "# grid proxy configuration"
-		echo "export X509_USER_PROXY=\"/afs/cern.ch/user/j/jkaspar/x509up_u2177\""
 		echo ""
 		cat "common_job_code"
 		echo ""
@@ -95,7 +138,7 @@ function MakeConfig()
 function MakeScript()
 {
 	cat "$template_file" | sed -e "\
-			s|\$input_files|$input_files|;\
+			s|\$input_file_commands|$input_file_commands|;\
 			s|\$output_file|$output_file|;\
 		" > "$dir_out/$config_file"
 }
@@ -115,47 +158,35 @@ function ProcessOne()
 {
 	dir_out="../work_dir/fill$fill/xangle$xangle/$stream"
 
+	# make output directory
 	mkdir -p "$dir_out"
-
-	# TODO: uncomment if needed
-###   	# copy json file
-###   	cp "$f_in" "$dir_out/run_ls_selection.json"
-###   
-###   	# extract run list
-###   	runs=`grep -o '".*"' "$dir_out/run_ls_selection.json" | sed 's/"//g'`
-###   	run_list=""
-###   	for run in $runs
-###   	do
-###   		if [ -n "$run_list" ]
-###   		then
-###   			run_list="$run_list, "
-###   		fi
-###   
-###   		run_list="$run_list$run"
-###   	done
-###   
-###   	# query list of files
-###   	f_files="$dir_out/input_files"
-###   	rm -f "$f_files"
-###   	das_client --query "file dataset=/$stream/Run2017B-17Nov2017-v1/MINIAOD run in [$run_list]" --limit=0 >> "$f_files"
-###   	das_client --query "file dataset=/$stream/Run2017C-17Nov2017-v1/MINIAOD run in [$run_list]" --limit=0 >> "$f_files"
-###   	das_client --query "file dataset=/$stream/Run2017D-17Nov2017-v1/MINIAOD run in [$run_list]" --limit=0 >> "$f_files"
-
-	# process input files
-	input_files=""
-	for file in `cat "$dir_out/input_files"`
-	do
-		input_files="$input_files\"$file\",\n"
-	done
 
 	# set directories, filenames, etc.
 	execute_dir="`pwd -P`/$dir_out"
 	reco_dir="/pool"
 
-	storage_dir="/eos/totem/data/ctpps/reconstruction/2017/preTS2_alignment_data/version1"
+	storage_dir="/eos/totem/data/ctpps/reconstruction/2017/preTS2_alignment_data/version3"
 
 	output_file="$reco_dir/fill${fill}_xangle${xangle}_$stream.root"
 	output_tag="fill${fill}_xangle${xangle}_$stream"
+
+	# copy JSON selection
+	cp "$f_in" "$dir_out/run_ls_selection.json"
+
+	# get input-file list
+	if [ ! -f "$dir_out/input_files" ]
+	then
+		MakeInputFiles
+	fi
+
+	# process input files
+	(
+		echo "def AddFiles(source):"
+		for file in `cat "$dir_out/input_files"|sort|uniq`
+		do
+			echo "  source.fileNames.append(\"$file\")"
+		done
+	) > "$dir_out/input_files.py"
 
 	# make config
 	MakeConfig
@@ -177,8 +208,8 @@ do
 	then
 		continue
 	fi
-	
-	echo "$f_in"
+
+	echo "* $f_in"
 
 	tag=${f_in#*/}
 	tag=${tag%.*}
@@ -189,6 +220,14 @@ do
 	xangle=${tag#*_}
 	xangle=${xangle#xangle}
 
+	# skip data that cannot be matched to corresponding data in the alignment run
+	if [ "$xangle" -ne "150" -a "$xangle" -ne "120" ]
+	then
+		echo "    skip"
+		continue
+	fi
+
+	# process all streams
 	for stream in ${streams[*]}
 	do
 		ProcessOne &
