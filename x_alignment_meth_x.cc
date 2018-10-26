@@ -236,7 +236,7 @@ void DoMatchMethodX(TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref,
 
 //----------------------------------------------------------------------------------------------------
 
-void DoMatch(unsigned int rpId,
+void DoMatch(unsigned int rpId, string ref_phys,
 		TGraph *g_test, const SelectionRange &r_test, TGraph *g_ref, const SelectionRange &r_ref,
 		double sh_min, double sh_max,
 		double &r_method_x)
@@ -247,32 +247,74 @@ void DoMatch(unsigned int rpId,
 
 	//  method x
 	SelectionRange r_test_x, r_ref_x;
-        if( rpId == 3 )
+	// alignment corrections for xangle 150 murad
+	if ( ref_phys == "data/phys/fill_5840/xangle_150/SingleMuon")
 	{
+        	if( rpId == 3 )
+		{
 		r_test_x.x_min = 12.; r_test_x.x_max= 17.5;
                 r_ref_x.x_min = 2.; r_ref_x.x_max=17.425;
 		shift = -3.35;		
+		}
+
+        	else if( rpId == 23 )
+		{
+			r_test_x.x_min = 52.7; r_test_x.x_max= 63.;
+			r_ref_x.x_min = r_ref.x_min; r_ref_x.x_max = 63.;
+			shift = -42.4;	bin_number = 98;
+		}
+
+	        else if( rpId == 103 )
+		{
+			r_test_x.x_min = 7.; r_test_x.x_max = 16.;
+			r_ref_x.x_min = 2.; r_ref_x.x_max=16.;
+			shift = -2.6;
+		}
+
+        	else if( rpId == 123 )
+		{
+			r_test_x.x_min = 52.3; r_test_x.x_max = 59.; bin_number = 98;
+                	r_ref_x.x_min = r_ref.x_min; r_ref_x.x_max = 59.;
+			shift = -42.6; bin_number = 98;
+		}
 	}
 
-        else if( rpId == 23 )
-	{
-		r_test_x.x_min = 52.7; r_test_x.x_max= 63.;
-		r_ref_x.x_min = r_ref.x_min; r_ref_x.x_max = 63.;
-		shift = -42.4;	bin_number = 98;
-	}
+        // alignment corrections for xangle 120 murad
 
-        else if( rpId == 103 )
-	{
-		r_test_x.x_min = 7.; r_test_x.x_max = 16.;
-		r_ref_x.x_min = 2.; r_ref_x.x_max=16.;
-		shift = -2.6;
-	}
-        else if( rpId == 123 )
-	{
-		r_test_x.x_min = 52.3; r_test_x.x_max = 59.; bin_number = 98;
-                r_ref_x.x_min = r_ref.x_min; r_ref_x.x_max = 59.;
-		shift = -42.6; bin_number = 98;
-	}
+        if ( ref_phys == "data/phys/fill_5849/xangle_120/ZeroBias")
+        {
+	        if( rpId == 3 )
+		{
+			r_test_x.x_min = 12.; r_test_x.x_max= 17.5;
+			r_ref_x.x_min = 2.; r_ref_x.x_max=17.425;
+			shift = -3.500;		
+		}
+
+	        else if( rpId == 23 )
+		{
+			r_test_x.x_min = 52.7; r_test_x.x_max= 63.;
+			r_ref_x.x_min = r_ref.x_min; r_ref_x.x_max = 63.;
+			shift = -42.450;	bin_number = 98;
+		}
+
+	        else if( rpId == 103 )
+		{
+			r_test_x.x_min = 7.; r_test_x.x_max = 16.;
+			r_ref_x.x_min = 2.; r_ref_x.x_max=16.;
+			shift = -2.375 ;
+		}
+
+	        else if( rpId == 123 )
+		{
+			r_test_x.x_min = 52.3; r_test_x.x_max = 59.; bin_number = 98;
+	                r_ref_x.x_min = r_ref.x_min; r_ref_x.x_max = 59.;
+			shift = -42.475; bin_number = 98;
+		}
+
+        }
+
+
+
 
         gDirectory = d_top->mkdir("method x");
         printf("    method x\n");
@@ -317,7 +359,7 @@ int main()
 	TFile *f_in = new TFile("distributions.root");
 
 	// ouput file
-	TFile *f_out = new TFile("match.root", "recreate");
+	TFile *f_out = new TFile("x_alignment_meth_x.root", "recreate");
 
 	// prepare results
 	AlignmentResultsCollection results;
@@ -327,11 +369,20 @@ int main()
 	{
 		printf("-------------------- reference dataset: %s\n", ref.c_str());
 
-		const string &ref_tag = ReplaceAll(ref, "/", "_");
+/*		const string &ref_tag = ReplaceAll(ref, "/", "_");
 		TDirectory *ref_dir = f_out->mkdir(ref_tag.c_str());
+*/
+
 
 		// path to sample aligned at low-x
-		const string ref_phys_ref = "data/phys/fill_5840/xangle_150/SingleMuon";
+		
+		string ref_phys_ref; //path to aligned physics fill
+
+		if ( ref == "data/alig/fill_5685/xangle_150/DS1" ) ref_phys_ref = "data/phys/fill_5840/xangle_150/SingleMuon";
+		if ( ref == "data/alig/fill_5685/xangle_120/DS1" ) ref_phys_ref = "data/phys/fill_5849/xangle_120/ZeroBias";
+
+                const string &ref_tag = ReplaceAll(ref_phys_ref, "/", "_");
+		TDirectory *ref_dir = f_out->mkdir(ref_tag.c_str());
 	
 		const string ref_path = "../../../../../" + ref_phys_ref;
 		TFile *f_ref = TFile::Open((ref_path + "/distributions.root").c_str());
@@ -350,7 +401,7 @@ int main()
 			TGraph *g_ref = (TGraph *) f_ref->Get((rpd.sectorName + "/after selection/" + rpd.name + "/g_y_vs_x").c_str());
 			TGraph *g_test = (TGraph *) f_in->Get((rpd.sectorName + "/after selection/" + rpd.name + "/g_y_vs_x").c_str());
 
-			/*if (g_ref == NULL || g_test == NULL)
+			if (g_ref == NULL || g_test == NULL)
 			{
 				printf("    cannot load data, skipping\n");
 				continue;
@@ -360,12 +411,12 @@ int main()
 			{
 				printf("    too little input data, skipping\n");
 				continue;
-			}*/
+			}
 
 			gDirectory = rp_dir;
 			double r_method_x = 0.;
 			const auto &shift_range = cfg.matching_shift_ranges[rpd.id];
-			DoMatch(rpd.id,
+			DoMatch(rpd.id, ref_phys_ref,
 					g_test, cfg.matching_1d_ranges[rpd.id],
 					g_ref, cfg_ref.matching_1d_ranges[rpd.id],
 				shift_range.x_min, shift_range.x_max,
@@ -379,7 +430,7 @@ int main()
 	}
 
 	// write results
-	FILE *f_results = fopen("match.out", "w"); 
+	FILE *f_results = fopen("x_alignment_meth_x.out", "w"); 
 	results.Write(f_results);
 	fclose(f_results);
 
