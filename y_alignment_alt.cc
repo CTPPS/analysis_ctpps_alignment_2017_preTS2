@@ -40,8 +40,8 @@ int main()
 	};
 
 	vector<ArmData> armData = {
-		{ "sector 45", 2, 3, 0., 0. },
-		{ "sector 56", 102, 103, 0., 0. },
+		{ "sector 45", 3, 23, 0., 0. },
+		{ "sector 56", 103, 123, 0., 0. },
 	};
 
 	// get input
