@@ -6,5 +6,5 @@
 	mkdir json_selected
 	./apply_selection
 
-3. build reduction jobs
-	./build_jobs
+3. use standar reconstruction mechanism with config
+	/afs/cern.ch/work/j/jkaspar/software/ctpps/user/reconstruction/config/ctpps/2017/physics_fills_preTS2/reduction
