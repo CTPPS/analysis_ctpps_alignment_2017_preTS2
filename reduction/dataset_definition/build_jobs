@@ -1,13 +1,13 @@
 #!/bin/bash
 
 streams=(
-	"SingleMuon"
+	#"SingleMuon"
 	"DoubleEG"
-	"ZeroBias"
+	#"ZeroBias"
 )
 
 dataset_exts=(
-	"Run2017B-PromptReco-v1/AOD"
+	"Run2017B-17Nov2017-v1/AOD"
 	"Run2017C-17Nov2017-v1/AOD"
 	"Run2017D-17Nov2017-v1/AOD"
 )
@@ -165,7 +165,7 @@ function ProcessOne()
 	execute_dir="`pwd -P`/$dir_out"
 	reco_dir="/pool"
 
-	storage_dir="/eos/totem/data/ctpps/reconstruction/2017/preTS2_alignment_data/version3"
+	storage_dir="/eos/totem/data/ctpps/reconstruction/2017/preTS2_alignment_data/version4"
 
 	output_file="$reco_dir/fill${fill}_xangle${xangle}_$stream.root"
 	output_tag="fill${fill}_xangle${xangle}_$stream"
@@ -177,6 +177,11 @@ function ProcessOne()
 	if [ ! -f "$dir_out/input_files" ]
 	then
 		MakeInputFiles
+	fi
+
+	if [ ! -s "$dir_out/input_files" ]
+	then
+		echo "WARNING: $dir_out/input_files empty"
 	fi
 
 	# process input files
@@ -221,7 +226,9 @@ do
 	xangle=${xangle#xangle}
 
 	# skip data that cannot be matched to corresponding data in the alignment run
-	if [ "$xangle" -ne "150" -a "$xangle" -ne "120" ]
+	# TODO
+	#if [ "$xangle" -ne "150" -a "$xangle" -ne "120" ]
+	if [ "$xangle" -ne "140" ]
 	then
 		echo "    skip"
 		continue

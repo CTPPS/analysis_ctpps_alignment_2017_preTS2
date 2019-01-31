@@ -165,7 +165,7 @@ int main()
 		for (const auto &xp : fp.second)
 		{
 			char buf[100];
-			sprintf(buf, "per_fill/fill%u_xangle%u.json", fp.first, xp.first);
+			sprintf(buf, "json/fill_%u_xangle_%u_betast_0.40.json", fp.first, xp.first);
 			FILE *f = fopen(buf, "w");
 
 			SaveJSON(xp.second, f);

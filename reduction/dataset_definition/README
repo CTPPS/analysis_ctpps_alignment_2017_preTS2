@@ -1,9 +1,9 @@
 1. process the xangle_tillTS2.csv file
-	mkdir per_fill
+	mkdir json
 	make && ./parse_xangle
 
 2. apply RP in & CMS selection
-	mkdir per_fill_selected
+	mkdir json_selected
 	./apply_selection
 
 3. build reduction jobs

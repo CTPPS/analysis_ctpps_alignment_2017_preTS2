@@ -1,9 +1,9 @@
 #!/bin/bash
 
-for f in per_fill/*.json
+for f in json/*.json
 do
 	f_out=${f#*/}
-	f_out="per_fill_selected/$f_out"
+	f_out="json_selected/$f_out"
 
 	echo "$f --> $f_out"
 
