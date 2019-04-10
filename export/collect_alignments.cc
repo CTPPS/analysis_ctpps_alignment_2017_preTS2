@@ -23,14 +23,13 @@ int main()
 
 	vector<string> xangles = {
 		"xangle_150",
-		"xangle_130",
-		//"xangle_110",
+		"xangle_120",
 	};
 
 	vector<string> datasets = {
 		"DoubleEG",
-		//"SingleMuon",
-		//"ZeroBias",
+		"SingleMuon",
+		"ZeroBias",
 	};
 
 	struct ArmData {
@@ -102,22 +101,23 @@ int main()
 					const AlignmentResults &ar_x_rel = arc_x_rel["x_alignment_relative_sl_fix"];
 					const AlignmentResults &ar_y_method_s = arc_y_method_s["y_alignment_alt"];
 
-					bool found = true;
+					bool notFound = 0;
 
 					auto rit_x_method_o = ar_x_method_o.find(rp);
 					if (rit_x_method_o == ar_x_method_o.end())
-						found = false;
+						notFound += 1;
 
 					auto rit_x_rel = ar_x_rel.find(rp);
 					if (rit_x_rel == ar_x_rel.end())
-						found = false;
+						notFound += 2;
 
 					auto rit_y_method_s = ar_y_method_s.find(rp);
 					if (rit_y_method_s == ar_y_method_s.end())
-						found = false;
+						notFound += 4;
 
-					if (!found)
+					if (notFound)
 					{
+						//printf("notFound = %u\n", notFound);
 						rpsWithMissingData.push_back(rp);
 						continue;
 					}
@@ -154,22 +154,29 @@ int main()
 		// process data from all RPs
 		AlignmentResults ars_combined;
 
+		vector<unsigned int> rpsWithNoData;
+
 		for (const auto &ad : armData)
 		{
 			auto &d_N = rpData[ad.rp_id_N];
 			auto &d_F = rpData[ad.rp_id_F];
 
+			bool stop = false;
+
 			if (d_N.n == 0)
 			{
-				printf("ERROR: no data for RP %u in fill %u.\n", ad.rp_id_N, fill);
-				continue;
+				rpsWithNoData.push_back(ad.rp_id_N);
+				stop = true;
 			}
 
 			if (d_F.n == 0)
 			{
-				printf("ERROR: no data for RP %u in fill %u.\n", ad.rp_id_F, fill);
-				continue;
+				rpsWithNoData.push_back(ad.rp_id_F);
+				stop = true;
 			}
+
+			if (stop)
+				continue;
 
 			// b = mean (x_F - x_N) with no correction
 			const double de_x_N = d_N.sxw_x_meth_o / d_N.sw_x_meth_o;
@@ -178,15 +185,32 @@ int main()
 			const double b = d_N.sxw_x_rel / d_N.sw_x_rel - d_F.sxw_x_rel / d_F.sw_x_rel;
 			const double x_corr_rel = b + de_x_F - de_x_N;
 
+			double x_corr_N = 0., x_corr_F = 0.;
+			if (ad.name == "sector 45") x_corr_N = +47E-3, x_corr_F = -47E-3;
+			if (ad.name == "sector 56") x_corr_N = +41E-3, x_corr_F = -41E-3;
 
-			AlignmentResult ar_N(de_x_N + x_corr_rel/2., 150E-3, d_N.sxw_y_meth_s / d_N.sw_y_meth_s, 150E-3);
-			AlignmentResult ar_F(de_x_F - x_corr_rel/2., 150E-3, d_F.sxw_y_meth_s / d_F.sw_y_meth_s, 150E-3);
+			if (fill >= 6061)
+			{
+				if (ad.name == "sector 45") x_corr_N += -130E-3, x_corr_F += -130E-3;
+			}
 
-			ar_N.rot_x = 3.1415927;
-			ar_N.rot_z = +0.27925268;
+			double y_corr_N = 0., y_corr_F = 0.;
+			if (ad.name == "sector 45") y_corr_N += +17E-3, y_corr_F += -17E-3;
+			if (ad.name == "sector 56") y_corr_N += -43E-3, y_corr_F += +43E-3;
+
+			AlignmentResult ar_N(de_x_N + x_corr_rel/2. + x_corr_N, 150E-3, d_N.sxw_y_meth_s / d_N.sw_y_meth_s + y_corr_N, 150E-3);
+			AlignmentResult ar_F(de_x_F - x_corr_rel/2. + x_corr_F, 150E-3, d_F.sxw_y_meth_s / d_F.sw_y_meth_s + y_corr_F, 150E-3);
 
 			ars_combined[ad.rp_id_N] = ar_N;
 			ars_combined[ad.rp_id_F] = ar_F;
+		}
+
+		if (!rpsWithNoData.empty())
+		{
+			printf("ERROR: fill %u has RPs with no data: ", fill);
+			for (const auto &rp : rpsWithNoData)
+				printf("%u, ", rp);
+			printf("\n");
 		}
 
 		char buf[50];

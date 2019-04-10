@@ -239,12 +239,20 @@ void InitFillsRuns()
 	{
 		FillReference ref = { fill, fill };
 
-		// TODO
-		/*
-		if (fill >= 6239 && fill <= 6285) ref = { 6287, fill };
-		if (fill == 6245) ref = { 6287, 6247 };
-		if (fill == 6351) ref = { 6355, 6355 };
-		*/
+		if (fill == 5946) ref = { 5950, 5950 };
+
+		if (fill == 5952) ref = { 5962, 5958 };
+		if (fill == 5954) ref = { 5962, 5958 };
+		if (fill == 5958) ref = { 5962, 5958 };
+		if (fill == 5960) ref = { 5962, 5962 };
+
+		if (fill == 5966) ref = { 5971, 5966 };
+		if (fill == 5974) ref = { 5976, 5974 };
+		if (fill == 6055) ref = { 6055, 6057 };
+		if (fill == 6086) ref = { 6089, 6089 };
+		if (fill == 6176) ref = { 6176, 6177 };
+
+		if (fill == 6193) ref = { 6193, 6192 };
 
 		fills_reference[fill] = ref;
 	}
