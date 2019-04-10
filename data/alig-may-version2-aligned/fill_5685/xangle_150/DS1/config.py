@@ -8,6 +8,10 @@ sys.path.append(os.path.relpath("../../../../../"))
 from config_base import config
 from input_files import input_files
 
+config.fill = 5685
+config.xangle = 150
+config.dataset = "DS1"
+
 config.input_files = input_files
 
 config.aligned = True
