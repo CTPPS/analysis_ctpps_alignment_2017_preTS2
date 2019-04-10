@@ -10,7 +10,11 @@
 .*
 !.gitignore
 
+condor.sub
+jkaspar.cc
+
 data/phys*/fill*/xangle*
+data/alig*/fill*/xangle*/*/input_files.py
 
 distributions
 match
