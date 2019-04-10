@@ -2,7 +2,7 @@
 
 top_dir="../data/phys"
 
-eos_dir="/eos/totem/data/ctpps/reconstruction/2017/preTS2_alignment_data/version1"
+eos_dir="/eos/totem/data/ctpps/reconstruction/2017/physics_runs_preTS2/alignment-version1"
 
 for f in `eos ls "$eos_dir"|grep ".root"`
 do
