@@ -1,0 +1,71 @@
+#!/bin/bash
+
+n_threads="20"
+
+programs=(
+	#distributions
+	match
+	x_alignment_meth_o
+	x_alignment_relative
+	y_alignment
+	y_alignment_alt
+)
+
+#----------------------------------------------------------------------------------------------------
+
+function ProcessOne()
+{
+	local idx="$1"
+	local buffer="$2"
+
+	cwd="`pwd -P`"
+
+	for entry in $buffer
+	do
+		local program="${entry%|*}"
+		local dir="${entry#*|}"
+
+		#echo "* thread $idx: $program, $dir"
+
+		cd "$dir"
+	
+		label="thread $idx, $program in $dir"
+
+		"$cwd/$program" &> "$program.log"
+		if [ $? -ne 0 ]
+		then
+			echo "* $label: run error"
+		else
+			echo "* $label: done"
+		fi
+
+		cd - &> /dev/null
+	done
+}
+
+#----------------------------------------------------------------------------------------------------
+
+# build all programs
+make || exit 1
+
+# collect input
+idx=0
+input=()
+for dir in data/phys-version1/fill_*/xangle_*/ALL/
+do
+	for program in ${programs[*]}
+	do
+		input[$idx]="${input[$idx]} $program|$dir"
+		idx=$(( (idx+1) % n_threads ))
+	done
+done
+
+# run in parallel
+for (( idx=0; idx<n_threads; idx++))
+do
+	ProcessOne $idx "${input[$idx]}" &
+done
+
+wait
+
+echo "done"
