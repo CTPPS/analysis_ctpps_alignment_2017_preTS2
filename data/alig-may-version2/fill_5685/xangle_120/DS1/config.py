@@ -22,20 +22,20 @@ config.matching_1d.reference_datasets = cms.vstring("data/alig/fill_5912/xangle_
 
 config.matching_1d.rp_L_2_F.x_min = 45
 config.matching_1d.rp_L_2_F.x_max = 63
-config.matching_1d.rp_L_2_F.sh_min = -43
-config.matching_1d.rp_L_2_F.sh_max = -42
+config.matching.rp_L_2_F.sh_min = -43
+config.matching.rp_L_2_F.sh_max = -42
 
 config.matching_1d.rp_L_1_F.x_min = 7
 config.matching_1d.rp_L_1_F.x_max = 23
-config.matching_1d.rp_L_1_F.sh_min = -5
-config.matching_1d.rp_L_1_F.sh_max = -4
+config.matching.rp_L_1_F.sh_min = -5
+config.matching.rp_L_1_F.sh_max = -4
 
 config.matching_1d.rp_R_1_F.x_min = 6
 config.matching_1d.rp_R_1_F.x_max = 23
-config.matching_1d.rp_R_1_F.sh_min = -3.7
-config.matching_1d.rp_R_1_F.sh_max = -2.7
+config.matching.rp_R_1_F.sh_min = -3.7
+config.matching.rp_R_1_F.sh_max = -2.7
 
 config.matching_1d.rp_R_2_F.x_min = 45
 config.matching_1d.rp_R_2_F.x_max = 63
-config.matching_1d.rp_R_2_F.sh_min = -43
-config.matching_1d.rp_R_2_F.sh_max = -42
+config.matching.rp_R_2_F.sh_min = -43
+config.matching.rp_R_2_F.sh_max = -42
