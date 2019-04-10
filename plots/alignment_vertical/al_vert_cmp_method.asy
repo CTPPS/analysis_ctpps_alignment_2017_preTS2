@@ -3,7 +3,7 @@ import pad_layout;
 
 include "../common.asy";
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
@@ -15,7 +15,8 @@ pen p_meth_s_curve = blue;
 
 //string sample = "DoubleEG";
 //string sample = "SingleMuon";
-string sample = "ZeroBias";
+//string sample = "ZeroBias";
+string sample = "ALL";
 
 int xangle = 150;
 
@@ -138,4 +139,4 @@ for (int rpi : rps.keys)
 
 //----------------------------------------------------------------------------------------------------
 
-GShipout(hSkip=5mm, vSkip=1mm);
+GShipout("al_vert_cmp_method", hSkip=5mm, vSkip=1mm);

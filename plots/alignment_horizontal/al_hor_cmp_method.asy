@@ -3,14 +3,14 @@ import pad_layout;
 
 include "../common.asy";
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
 
 //----------------------------------------------------------------------------------------------------
 
-string sample = "DoubleEG";
+string sample = "ALL";
 
 real mfa = 0.3;
 
@@ -20,10 +20,11 @@ methods.push("method x"); m_pens.push(blue);
 methods.push("method y"); m_pens.push(red);
 methods.push("method o"); m_pens.push(heavygreen);
 
-//int xangle = 120;
-//string ref_label = "data_alig_fill_5685_xangle_120_DS1";
-int xangle = 150;
-string ref_label = "data_alig_fill_5685_xangle_150_DS1";
+int xangle = 120;
+string ref_label = "data_alig-may-version2-aligned_fill_5685_xangle_120_DS1";
+
+//int xangle = 150;
+//string ref_label = "data_alig-may-version2-aligned_fill_5685_xangle_150_DS1";
 
 int rp_ids[];
 string rps[], rp_labels[];
@@ -150,4 +151,4 @@ for (int rpi : rps.keys)
 
 //----------------------------------------------------------------------------------------------------
 
-GShipout(hSkip=5mm, vSkip=1mm);
+GShipout("al_hor_cmp_method", hSkip=5mm, vSkip=1mm);

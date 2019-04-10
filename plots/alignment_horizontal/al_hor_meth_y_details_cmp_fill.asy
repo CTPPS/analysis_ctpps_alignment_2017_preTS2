@@ -13,6 +13,10 @@ string datasets[] = {
 	"fill_6192/xangle_150/DoubleEG",
 };
 
+string topDir = "../../data/alig-may-version2/";
+string reference = "data_alig-jul-version7_fill_5912_xangle_120_DS1";
+string datasets[] = { "fill_5685/xangle_120/DS1" };
+
 string rps[], rp_labels[];
 rps.push("L_2_F"); rp_labels.push("L-220-fr");
 rps.push("L_1_F"); rp_labels.push("L-210-fr");
@@ -53,4 +57,4 @@ for (int dsi : datasets.keys)
 	}
 }
 
-GShipout(hSkip=1mm, vSkip=1mm);
+GShipout("al_hor_meth_y_details_cmp_fill", hSkip=1mm, vSkip=1mm);
