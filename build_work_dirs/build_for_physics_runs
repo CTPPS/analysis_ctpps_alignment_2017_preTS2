@@ -1,19 +1,22 @@
 #!/bin/bash
 
-top_dir="../data/phys"
+top_dir="../data/phys-version1"
 
 eos_dir="/eos/totem/data/ctpps/reconstruction/2017/physics_runs_preTS2/alignment-version1"
 
 for f in `eos ls "$eos_dir"|grep ".root"`
 do
+	# parse file name
 	tag=${f%.*}
 
+	tag=${tag#fill}
 	fill=${tag%%_*}
-	fill=${fill#fill}
 
-	xangle=${tag#*_}
-	xangle=${xangle%_*}
-	xangle=${xangle#xangle}	
+	tag=${tag#*_xangle}
+	xangle=${tag%%_*}
+
+	tag=${tag#*_beta}
+	beta=${tag%%_*}
 
 	stream=${tag##*_}
 
@@ -23,7 +26,7 @@ do
 		continue
 	fi
 
-	echo "* $fill, $xangle, $stream"
+	echo "* $fill, $xangle, $beta, $stream"
 
 	# make work directory
 	dir="$top_dir/fill_$fill/xangle_$xangle/$stream/"
@@ -41,6 +44,15 @@ do
 	# if not present, make (default) config
 	if [ ! -f "$dir/config.py" ]
 	then
-		cp "config_template.py" "$dir/config.py"
+		cat "config_template.py" | sed "\
+				s|\$fill|$fill|;\
+				s|\$xangle|$xangle|;\
+				s|\$dataset|$stream|;\
+			" > "$dir/config.py"
+	fi
+
+	if [ ! -f "$dir/../../config_common.py" ]
+	then
+		cp "config_common_template.py" "$dir/../../config_common.py"
 	fi
 done

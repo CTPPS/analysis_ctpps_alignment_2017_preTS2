@@ -10,6 +10,8 @@
 .*
 !.gitignore
 
+data/phys*/fill*/xangle*
+
 distributions
 match
 x_alignment_meth_o

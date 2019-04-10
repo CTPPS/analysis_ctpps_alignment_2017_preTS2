@@ -65,7 +65,7 @@ config = cms.PSet(
     ),
 
     matching = cms.PSet(
-      reference_datasets = cms.vstring(),
+      reference_datasets = cms.vstring("default"),
 
       rp_L_2_F = cms.PSet(
         sh_min = cms.double(-44),
