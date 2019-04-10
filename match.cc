@@ -465,14 +465,12 @@ int main()
 	// processing
 	for (auto ref : cfg.matching_reference_datasets)
 	{
-		/*
 		if (ref == "default")
 		{
 			char buf[100];
-			sprintf(buf, "data/alig/fill_6228/xangle_%u/DS1", cfg.xangle);
+			sprintf(buf, "data/alig-may-version2-aligned/fill_5685/xangle_%u/DS1", cfg.xangle);
 			ref = buf;
 		}
-		*/
 
 		printf("-------------------- reference dataset: %s\n", ref.c_str());
 

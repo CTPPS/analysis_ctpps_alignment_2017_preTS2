@@ -41,7 +41,7 @@ TF1 *ff_pol2 = new TF1("ff_pol2", "[0] + [1]*x + [2]*x*x");
 
 //----------------------------------------------------------------------------------------------------
 
-int FitProfile(TProfile *p, bool /*aligned*/, double &sl, double &sl_unc)
+int FitProfile(TProfile *p, unsigned int fill, double &sl, double &sl_unc)
 {
 	if (p->GetEntries() < 100)
 		return 1;
@@ -56,6 +56,11 @@ int FitProfile(TProfile *p, bool /*aligned*/, double &sl, double &sl_unc)
 	}
 
 	double x_min = 1.5, x_max = 6.0;
+	if (fill == 5912)
+	{
+		x_min = -2.;
+		x_max = +2.;
+	}
 
 	ff_pol1->SetParameter(0., 0.);
 	p->Fit(ff_pol1, "Q", "", x_min, x_max);
@@ -68,7 +73,7 @@ int FitProfile(TProfile *p, bool /*aligned*/, double &sl, double &sl_unc)
 
 //----------------------------------------------------------------------------------------------------
 
-TGraphErrors* BuildGraphFromDirectory(TDirectory *dir, bool aligned)
+TGraphErrors* BuildGraphFromDirectory(TDirectory *dir, unsigned int fill)
 {
 	TGraphErrors *g = new TGraphErrors();
 
@@ -88,7 +93,7 @@ TGraphErrors* BuildGraphFromDirectory(TDirectory *dir, bool aligned)
 		TProfile *p = (TProfile *) k->ReadObj();
 
 		double sl=0., sl_unc=0.;
-		int fr = FitProfile(p, aligned, sl, sl_unc);
+		int fr = FitProfile(p, fill, sl, sl_unc);
 		if (fr != 0)
 			continue;
 
@@ -273,14 +278,12 @@ int main()
 	// processing
 	for (auto ref : cfg.matching_reference_datasets)
 	{
-		/*
 		if (ref == "default")
 		{
 			char buf[100];
-			sprintf(buf, "data/alig/fill_6228/xangle_%u/DS1", cfg.xangle);
+			sprintf(buf, "data/alig-may-version2-aligned/fill_5685/xangle_%u/DS1", cfg.xangle);
 			ref = buf;
 		}
-		*/
 
 		printf("-------------------- reference dataset: %s\n", ref.c_str());
 
@@ -306,9 +309,9 @@ int main()
 
 			// build graphs for matching
 			gDirectory = rp_dir->mkdir("fits_ref");
-			TGraphErrors *g_ref = BuildGraphFromDirectory(d_ref, true);
+			TGraphErrors *g_ref = BuildGraphFromDirectory(d_ref, cfg_ref.fill);
 			gDirectory = rp_dir->mkdir("fits_test");
-			TGraphErrors *g_test = BuildGraphFromDirectory(d_test, false);
+			TGraphErrors *g_test = BuildGraphFromDirectory(d_test, cfg.fill);
 
 			gDirectory = rp_dir;
 			g_ref->Write("g_ref");
