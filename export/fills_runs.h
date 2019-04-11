@@ -12,7 +12,7 @@ struct FillReference
 
 std::map<unsigned int, FillReference> fills_reference;
 
-void InitFillsRuns()
+void InitFillsRuns(bool useExceptionList = true)
 {
 	// mapping fill -> runs, from DAS
 	fills_runs[5839] = {297046, 297047, 297048, 297049, 297050};
@@ -239,20 +239,23 @@ void InitFillsRuns()
 	{
 		FillReference ref = { fill, fill };
 
-		if (fill == 5946) ref = { 5950, 5950 };
+		if (useExceptionList)
+		{
+			if (fill == 5946) ref = { 5950, 5950 };
 
-		if (fill == 5952) ref = { 5962, 5958 };
-		if (fill == 5954) ref = { 5962, 5958 };
-		if (fill == 5958) ref = { 5962, 5958 };
-		if (fill == 5960) ref = { 5962, 5962 };
+			if (fill == 5952) ref = { 5962, 5958 };
+			if (fill == 5954) ref = { 5962, 5958 };
+			if (fill == 5958) ref = { 5962, 5958 };
+			if (fill == 5960) ref = { 5962, 5962 };
 
-		if (fill == 5966) ref = { 5971, 5966 };
-		if (fill == 5974) ref = { 5976, 5974 };
-		if (fill == 6055) ref = { 6055, 6057 };
-		if (fill == 6086) ref = { 6089, 6089 };
-		if (fill == 6176) ref = { 6176, 6177 };
+			if (fill == 5966) ref = { 5971, 5966 };
+			if (fill == 5974) ref = { 5976, 5974 };
+			if (fill == 6055) ref = { 6055, 6057 };
+			if (fill == 6086) ref = { 6089, 6089 };
+			if (fill == 6176) ref = { 6176, 6177 };
 
-		if (fill == 6193) ref = { 6193, 6192 };
+			if (fill == 6193) ref = { 6193, 6192 };
+		}
 
 		fills_reference[fill] = ref;
 	}
