@@ -1,16 +1,25 @@
 import root;
 import pad_layout;
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
-string reference = "data_alig_fill_5685_xangle_150_DS1";
+string reference = "data_alig-may-version2-aligned_fill_5685_xangle_150_DS1";
 
 string datasets[] = {
-	"fill_5839/xangle_150/DoubleEG",
-	"fill_5974/xangle_150/DoubleEG",
-	"fill_6090/xangle_150/DoubleEG",
-	"fill_6155/xangle_150/DoubleEG",
-	"fill_6192/xangle_150/DoubleEG",
+	"fill_5839/xangle_150/ALL",
+	"fill_5974/xangle_150/ALL",
+	"fill_6090/xangle_150/ALL",
+	"fill_6155/xangle_150/ALL",
+	"fill_6192/xangle_150/ALL",
+};
+
+string reference = "data_alig-may-version2-aligned_fill_5685_xangle_120_DS1";
+string datasets[] = {
+	"fill_5848/xangle_120/ALL",
+	"fill_5976/xangle_120/ALL",
+	"fill_6061/xangle_120/ALL",
+	"fill_6156/xangle_120/ALL",
+	"fill_6189/xangle_120/ALL",
 };
 
 string rps[], rp_labels[];

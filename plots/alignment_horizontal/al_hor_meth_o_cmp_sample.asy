@@ -3,7 +3,7 @@ import pad_layout;
 
 include "../common.asy";
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
@@ -12,18 +12,19 @@ InitDataSets();
 
 string sample_labels[];
 pen sample_pens[];
-sample_labels.push("ZeroBias"); sample_pens.push(blue);
-sample_labels.push("DoubleEG"); sample_pens.push(red);
-sample_labels.push("SingleMuon"); sample_pens.push(heavygreen);
+//sample_labels.push("ZeroBias"); sample_pens.push(blue);
+//sample_labels.push("DoubleEG"); sample_pens.push(magenta);
+//sample_labels.push("SingleMuon"); sample_pens.push(heavygreen);
+sample_labels.push("ALL"); sample_pens.push(red);
 
 real sfa = 0.3;
 
 string method = "method o";
 
 //int xangle = 120;
-//string ref_label = "data_alig_fill_5685_xangle_120_DS1";
+//string ref_label = "data_alig-may-version2-aligned_fill_5685_xangle_120_DS1";
 int xangle = 150;
-string ref_label = "data_alig_fill_5685_xangle_150_DS1";
+string ref_label = "data_alig-may-version2-aligned_fill_5685_xangle_150_DS1";
 
 int rp_ids[];
 string rps[], rp_labels[];
@@ -133,4 +134,4 @@ for (int rpi : rps.keys)
 
 //----------------------------------------------------------------------------------------------------
 
-GShipout(hSkip=5mm, vSkip=1mm);
+GShipout("al_hor_meth_o_cmp_sample", hSkip=5mm, vSkip=1mm);

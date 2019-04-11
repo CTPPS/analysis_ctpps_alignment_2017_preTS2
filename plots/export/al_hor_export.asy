@@ -2,25 +2,32 @@ import root;
 import pad_layout;
 
 include "../common.asy";
+include "../io_alignment_format.asy";
 
-string topDir = "../../data/phys-version1/";
+string topDir = "../../data/phys/";
 
 include "../fills_samples.asy";
 InitDataSets();
 
 //----------------------------------------------------------------------------------------------------
 
-string sample = "ALL";
+string fn_export = "../../export/collect_alignments.out";
+AlignmentResults arc[];
+LoadAlignmentResults(fn_export, arc);
+
+string sample_labels[];
+sample_labels.push("ZeroBias");
+sample_labels.push("DoubleEG");
+sample_labels.push("SingleMuon");
+
+real sfa = 0.3;
 
 string method = "method o";
 
 int xangles[];
-string xangle_refs[];
-pen xangle_pens[];
-xangles.push(120); xangle_refs.push("data_alig-may-version2-aligned_fill_5685_xangle_120_DS1"); xangle_pens.push(blue);
-xangles.push(150); xangle_refs.push("data_alig-may-version2-aligned_fill_5685_xangle_150_DS1"); xangle_pens.push(heavygreen);
-
-real xfa = 0.3;
+string ref_labels[];
+xangles.push(150); ref_labels.push("data_alig_fill_5685_xangle_150_DS1");
+xangles.push(130); ref_labels.push("data_alig_fill_5685_xangle_120_DS1");
 
 int rp_ids[];
 string rps[], rp_labels[];
@@ -52,13 +59,16 @@ xTicksDef = LeftTicks(rotate(90)*Label(""), TickLabels, Step=1, step=0);
 
 NewPad(false, 1, 1);
 
+// TODO
+/*
 AddToLegend("(" + method + ")");
-AddToLegend("(" + sample + ")");
+AddToLegend(format("(xangle %u)", xangle));
 
-for (int xai : xangles.keys)
+for (int sai : sample_labels.keys)
 {
-	AddToLegend(format("xangle %u", xangles[xai]), xangle_pens[xai]);
+	AddToLegend(sample_labels[sai], sample_pens[sai]);
 }
+*/
 
 AttachLegend();
 
@@ -87,34 +97,52 @@ for (int rpi : rps.keys)
 	
 			mark m = mCi+3pt;
 	
-			for (int xai : xangles.keys)
+			for (int sai : sample_labels.keys)
 			{
-				if (fill_data[fdi].datasets[dsi].xangle != xangles[xai])
-					continue;
-
-				string f = topDir + dataset + "/" + sample + "/x_alignment_meth_o.root";	
-				RootObject obj = RootGetObject(f, xangle_refs[xai] + "/" + rps[rpi] + "/g_results", error = false);
-	
-				if (!obj.valid)
-					continue;
-	
-				real ax[] = { 0. };
-				real ay[] = { 0. };
-				obj.vExec("GetPoint", 0, ax, ay); real bsh = ax[0], bsh_unc = ay[0];
-
-				real x = fdi;
-				if (xangles.length > 1)
-					x += xai * xfa / (xangles.length - 1) - xfa/2;
-
-				bool pointValid = (bsh == bsh && bsh_unc == bsh_unc && fabs(bsh) > 0.01);
-	
-				pen p = xangle_pens[xai];
-	
-				if (pointValid)
+				for (int xai : xangles.keys)
 				{
-					draw((x, bsh), m + p);
-					draw((x, bsh-bsh_unc)--(x, bsh+bsh_unc), p);
+					if (fill_data[fdi].datasets[dsi].xangle != xangles[xai])
+						continue;
+
+					string f = topDir + dataset + "/" + sample_labels[sai] + "/x_alignment_meth_o.root";	
+					RootObject obj = RootGetObject(f, ref_labels[xai] + "/" + rps[rpi] + "/g_results", error = false);
+		
+					if (!obj.valid)
+						continue;
+		
+					real ax[] = { 0. };
+					real ay[] = { 0. };
+					obj.vExec("GetPoint", 0, ax, ay); real bsh = ax[0], bsh_unc = ay[0];
+
+					real x = fdi;
+					if (sample_labels.length > 1)
+						x += sai * sfa / (sample_labels.length - 1) - sfa/2;
+
+					bool pointValid = (bsh == bsh && bsh_unc == bsh_unc && fabs(bsh) > 0.01);
+		
+					pen p = black;
+		
+					if (pointValid)
+					{
+						draw((x, bsh), m + p);
+						draw((x, bsh-bsh_unc)--(x, bsh+bsh_unc), p);
+					}
 				}
+			}
+
+		}
+
+		// plot export data
+		for (int ri : arc.keys)
+		{
+			string label = format("fill %u", fill);
+			if (arc[ri].label == label)
+			{
+				if (!arc[ri].results.initialized(rp_ids[rpi]))
+					continue;
+
+				AlignmentResult r = arc[ri].results[rp_ids[rpi]];
+				draw((fdi, r.sh_x), mCi + 3pt + red);
 			}
 		}
 	}
@@ -130,4 +158,4 @@ for (int rpi : rps.keys)
 
 //----------------------------------------------------------------------------------------------------
 
-GShipout("al_hor_meth_o_cmp_xangle", hSkip=5mm, vSkip=1mm);
+GShipout(hSkip=5mm, vSkip=1mm);

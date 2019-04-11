@@ -1,9 +1,9 @@
 import root;
 import pad_layout;
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
-string dataset = "fill_5839/xangle_150/DoubleEG";
+string dataset = "fill_5839/xangle_150/ALL";
 
 string dir = "sector 45/near_far/p_y_diffFN_vs_y_N, x slices";
 
@@ -29,4 +29,4 @@ for (int sli : slices.keys)
 	AttachLegend("x: " + slices[sli]);
 }
 
-GShipout(hSkip=1mm, vSkip=1mm);
+GShipout("al_hor_meth_o_fit_details", hSkip=1mm, vSkip=1mm);
