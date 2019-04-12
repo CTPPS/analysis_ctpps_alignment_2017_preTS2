@@ -44,14 +44,14 @@ config.matching_1d.rp_R_2_F.x_max = 63
 config.matching.rp_R_2_F.sh_min = -43
 config.matching.rp_R_2_F.sh_max = -42
 
-config.x_alignment_meth_o.rp_L_2_F.x_min = 45.2
-config.x_alignment_meth_o.rp_L_2_F.x_max = 57.5
+config.x_alignment_meth_o.rp_L_2_F.x_min = 44
+config.x_alignment_meth_o.rp_L_2_F.x_max = 50
 
-config.x_alignment_meth_o.rp_L_1_F.x_min = 7.2
-config.x_alignment_meth_o.rp_L_1_F.x_max = 19.4
+config.x_alignment_meth_o.rp_L_1_F.x_min = 6
+config.x_alignment_meth_o.rp_L_1_F.x_max = 15
 
-config.x_alignment_meth_o.rp_R_1_F.x_min = 5.6
-config.x_alignment_meth_o.rp_R_1_F.x_max = 18.3
+config.x_alignment_meth_o.rp_R_1_F.x_min = 5
+config.x_alignment_meth_o.rp_R_1_F.x_max = 13
 
-config.x_alignment_meth_o.rp_R_2_F.x_min = 45.0
-config.x_alignment_meth_o.rp_R_2_F.x_max = 57.5
+config.x_alignment_meth_o.rp_R_2_F.x_min = 44.5
+config.x_alignment_meth_o.rp_R_2_F.x_max = 52
