@@ -444,8 +444,8 @@ int main()
 	}
 
 	// TODO
-	if (cfg.input_files.size() > 50)
-		cfg.input_files.resize(50);
+	//if (cfg.input_files.size() > 5)
+	//	cfg.input_files.resize(5);
 
 	printf("-------------------- config ----------------------\n");
 	cfg.Print(true);
