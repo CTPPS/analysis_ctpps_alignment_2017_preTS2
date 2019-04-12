@@ -472,7 +472,7 @@ int main()
 	{
 		ev_count++;
 
-		// TODO
+		// run selection rules to temporarily handle a bugged re-reco
 		if (cfg.fill == 5685)
 		{
 			const auto &run = ev.id().run();
@@ -480,6 +480,14 @@ int main()
 			if (cfg.xangle == 120 && !(run == 294741))
 				continue;
 			if (cfg.xangle == 150 && !(run == 294736 || run == 294737 || run == 294739))
+				continue;
+		}
+
+		if (cfg.fill == 5912)
+		{
+			const auto &run = ev.id().run();
+
+			if (cfg.xangle == 120 && !(run == 298597))
 				continue;
 		}
 
