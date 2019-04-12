@@ -38,8 +38,8 @@ int main()
 	};
 
 	vector<SectorData> sectorData = {
-		{ "sector 45", 3, 23, +0.008 },
-		{ "sector 56", 103, 123, -0.012 }
+		{ "sector 45", 3, 23, +0.006 },
+		{ "sector 56", 103, 123, -0.010 }
 	};
 
 	// get input
