@@ -168,7 +168,7 @@ int main()
 	// fit graphs
 	for (auto &g : rpGraphs)
 	{
-		g.second.f_x_meth_o = new TF1("", "[0] + [1]*x");
+		g.second.f_x_meth_o = (g.first < 100) ? new TF1("", "[0] + [1]*x") : new TF1("", "[0] + [1]*x + [2]*x*x");
 		g.second.g_x_meth_o->Fit(g.second.f_x_meth_o, "Q");
 
 		g.second.f_x_rel = new TF1("", "[0] + [1]*x");
@@ -204,10 +204,8 @@ int main()
 			if (ad.name == "sector 56") x_corr_N = +41E-3, x_corr_F = -41E-3;
 
 			// TODO: needed ??
-			if (fill >= 6061)
-			{
-				if (ad.name == "sector 45") x_corr_N += -130E-3, x_corr_F += -130E-3;
-			}
+			//if (fill >= 6061)
+			//	if (ad.name == "sector 45") x_corr_N += -130E-3, x_corr_F += -130E-3;
 
 			double y_corr_N = 0., y_corr_F = 0.;
 			if (ad.name == "sector 45") y_corr_N += +17E-3, y_corr_F += -17E-3;
