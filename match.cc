@@ -468,7 +468,7 @@ int main()
 		if (ref == "default")
 		{
 			char buf[100];
-			sprintf(buf, "data/alig-may-version2-aligned/fill_5685/xangle_%u/DS1", cfg.xangle);
+			sprintf(buf, "data/alig-may-version3-aligned/fill_5685/xangle_%u/DS1", cfg.xangle);
 			ref = buf;
 		}
 

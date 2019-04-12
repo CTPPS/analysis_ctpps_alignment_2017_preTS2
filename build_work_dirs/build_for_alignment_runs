@@ -34,20 +34,19 @@ function GetOne()
 }
 
 # alignment run May 2017
-top_dir="../data/alig-may-version2"
-eos_dir="/eos/totem/data/ctpps/reconstruction/2017/alignment_run_May/version2"
-#GetOne "5685" "150" "DS1" "run_294736\|run_294737\|run_294739"
+top_dir="../data/alig-may-version3"
+eos_dir="/eos/totem/data/ctpps/reconstruction/2017/alignment_run_May/version3"
 GetOne "5685" "120" "DS1" "run_294741"
 
 # alignment run May 2017
-top_dir="../data/alig-may-version2-aligned"
-eos_dir="/eos/totem/data/ctpps/reconstruction/2017/alignment_run_May/version2"
+top_dir="../data/alig-may-version3-aligned"
+eos_dir="/eos/totem/data/ctpps/reconstruction/2017/alignment_run_May/version3"
 GetOne "5685" "150" "DS1" "run_294736\|run_294737\|run_294739"
 GetOne "5685" "120" "DS1" "run_294741"
 
 # alignment run July 2017
-top_dir="../data/alig-jul-version7"
-eos_dir="/eos/totem/data/ctpps/reconstruction/2017/alignment_run_July/version7"
+top_dir="../data/alig-jul-version8"
+eos_dir="/eos/totem/data/ctpps/reconstruction/2017/alignment_run_July/version8"
 #GetOne "5912" "140" "DS1" "run_298593"
 #GetOne "5912" "130" "DS1" "run_298594\|run_298596"
 GetOne "5912" "120" "DS1" "run_298597"
