@@ -444,8 +444,8 @@ int main()
 	}
 
 	// TODO
-	//if (cfg.input_files.size() > 15)
-	//	cfg.input_files.resize(15);
+	if (cfg.input_files.size() > 50)
+		cfg.input_files.resize(50);
 
 	printf("-------------------- config ----------------------\n");
 	cfg.Print(true);
@@ -467,9 +467,23 @@ int main()
 	unsigned long int ev_count = 0;
 	unsigned long int ev_sel_count_45 = 0;
 	unsigned long int ev_sel_count_56 = 0;
+	set<unsigned int> runs;
 	for (ev.toBegin(); ! ev.atEnd(); ++ev)
 	{
 		ev_count++;
+
+		// TODO
+		if (cfg.fill == 5685)
+		{
+			const auto &run = ev.id().run();
+
+			if (cfg.xangle == 120 && !(run == 294741))
+				continue;
+			if (cfg.xangle == 150 && !(run == 294736 || run == 294737 || run == 294739))
+				continue;
+		}
+
+		runs.insert(ev.id().run());
 
 		// TODO: comment out
 		//if (ev_sel_count_45 + ev_sel_count_56 > 10000)
@@ -490,6 +504,11 @@ int main()
 	printf("* events processed: %lu\n", ev_count);
 	printf("* events selected in 45: %lu\n", ev_sel_count_45);
 	printf("* events selected in 56: %lu\n", ev_sel_count_56);
+
+	printf("* runs: ");
+	for (const auto &r : runs)
+		printf("%u, ", r);
+	printf("\n");
 
 	// save histograms
 	gDirectory = f_out;
