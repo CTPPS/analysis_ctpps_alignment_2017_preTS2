@@ -32,7 +32,7 @@ config = cms.PSet(
 
       cut_v_apply = cms.bool(False),
       cut_v_a = cms.double(-1.1),
-      cut_v_c = cms.double(0.9),
+      cut_v_c = cms.double(0.67),
       cut_v_si = cms.double(0.5),
 
       nr_x_slice_min = cms.double(6.5),
@@ -52,7 +52,7 @@ config = cms.PSet(
 
       cut_v_apply = cms.bool(False),
       cut_v_a = cms.double(-1.1),
-      cut_v_c = cms.double(0.8),
+      cut_v_c = cms.double(0.65),
       cut_v_si = cms.double(0.5),
 
       nr_x_slice_min = cms.double(5.5),

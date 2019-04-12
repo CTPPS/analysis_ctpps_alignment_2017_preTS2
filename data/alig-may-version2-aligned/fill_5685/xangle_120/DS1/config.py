@@ -23,9 +23,11 @@ config.alignment_corrections.rp_R_2_F.de_x = -42.475
 
 config.sector_45.cut_h_a = -1.007
 config.sector_45.cut_h_c = -0.20
+config.sector_45.cut_v_c = +0.78
 
 config.sector_56.cut_h_a = -0.983
 config.sector_56.cut_h_c = -0.09
+config.sector_56.cut_v_c = +0.73
 
 config.sector_45.nr_x_slice_min = 2
 config.sector_45.nr_x_slice_max = 22

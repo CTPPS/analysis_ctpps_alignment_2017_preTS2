@@ -17,8 +17,10 @@ config.input_files = input_files
 config.aligned = True
 
 config.sector_45.cut_h_c = -0.07
+config.sector_45.cut_v_c = +0.22
 
 config.sector_56.cut_h_c = +0.07
+config.sector_56.cut_v_c = 0.09
 
 config.matching_1d.rp_L_2_F.x_min = 2.0
 config.matching_1d.rp_L_2_F.x_max = 4.8

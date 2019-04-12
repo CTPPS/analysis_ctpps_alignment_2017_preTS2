@@ -16,11 +16,11 @@ config.input_files = input_files
 
 config.sector_45.cut_h_a = -1.01
 config.sector_45.cut_h_c = -38.25
-config.sector_45.cut_h_si = 0.2
+config.sector_45.cut_v_c = +0.78
 
 config.sector_56.cut_h_a = -0.99
 config.sector_56.cut_h_c = -39.25
-config.sector_56.cut_h_si = 0.2
+config.sector_56.cut_v_c = +0.73
 
 config.matching.reference_datasets = ["data/alig-jul-version7/fill_5912/xangle_120/DS1"]
 
