@@ -16,10 +16,10 @@ config.input_files = input_files
 
 config.aligned = True
 
-config.alignment_corrections.rp_L_2_F.de_x = -42.525
-config.alignment_corrections.rp_L_1_F.de_x = -4.4
-config.alignment_corrections.rp_R_1_F.de_x = -3.275
-config.alignment_corrections.rp_R_2_F.de_x = -42.475
+config.alignment_corrections.rp_L_2_F.de_x = -42.680
+config.alignment_corrections.rp_L_1_F.de_x =  -4.300
+config.alignment_corrections.rp_R_1_F.de_x =  -3.250
+config.alignment_corrections.rp_R_2_F.de_x = -42.600
 
 config.sector_45.cut_h_a = -1.007
 config.sector_45.cut_h_c = -0.20
