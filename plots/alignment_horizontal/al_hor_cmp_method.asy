@@ -20,11 +20,11 @@ methods.push("method x"); m_pens.push(blue);
 methods.push("method y"); m_pens.push(red);
 methods.push("method o"); m_pens.push(heavygreen);
 
-int xangle = 120;
-string ref_label = "data_alig-may-version2-aligned_fill_5685_xangle_120_DS1";
+//int xangle = 120;
+//string ref_label = "data_alig-may-version3-aligned_fill_5685_xangle_120_DS1";
 
-//int xangle = 150;
-//string ref_label = "data_alig-may-version2-aligned_fill_5685_xangle_150_DS1";
+int xangle = 150;
+string ref_label = "data_alig-may-version3-aligned_fill_5685_xangle_150_DS1";
 
 int rp_ids[];
 string rps[], rp_labels[];

@@ -1,14 +1,14 @@
 import root;
 import pad_layout;
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 string datasets[] = {
-	"fill_5839/xangle_150/DoubleEG",
-	"fill_5974/xangle_150/DoubleEG",
-	"fill_6090/xangle_150/DoubleEG",
-	"fill_6155/xangle_150/DoubleEG",
-	"fill_6192/xangle_150/DoubleEG",
+	"fill_5839/xangle_150/ALL",
+	"fill_5974/xangle_150/ALL",
+	"fill_6090/xangle_150/ALL",
+	"fill_6155/xangle_150/ALL",
+	"fill_6192/xangle_150/ALL",
 };
 
 int rp_ids[];

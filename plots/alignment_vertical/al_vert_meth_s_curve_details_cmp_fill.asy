@@ -1,14 +1,14 @@
 import root;
 import pad_layout;
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 string datasets[] = {
-	"fill_5839/xangle_150/DoubleEG",
-	"fill_5974/xangle_150/DoubleEG",
-	"fill_6090/xangle_150/DoubleEG",
-	"fill_6155/xangle_150/DoubleEG",
-	"fill_6192/xangle_150/DoubleEG",
+	"fill_5839/xangle_150/ALL",
+	"fill_5974/xangle_150/ALL",
+	"fill_6090/xangle_150/ALL",
+	"fill_6155/xangle_150/ALL",
+	"fill_6192/xangle_150/ALL",
 };
 
 string plots[], p_arms[], p_rps[], p_x_axis[], p_y_axis[];
@@ -66,4 +66,4 @@ for (int dsi : datasets.keys)
 	}
 }
 
-GShipout(hSkip=0mm, vSkip=0mm);
+GShipout("al_vert_meth_s_curve_details_cmp_fill", hSkip=0mm, vSkip=0mm);

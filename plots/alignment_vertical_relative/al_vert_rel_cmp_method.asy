@@ -15,8 +15,8 @@ pen p_meth_s_curve = blue;
 
 string sample = "ALL";
 
-int xangle = 120;
-string ref_label = "data_alig-may-version2-aligned_fill_5685_xangle_120_DS1";
+int xangle = 150;
+string ref_label = "data_alig-may-version3-aligned_fill_5685_xangle_150_DS1";
 
 string sectors[], s_labels[];
 real s_y_mins[], s_y_maxs[], s_y_cens[];

@@ -1,7 +1,7 @@
 import root;
 import pad_layout;
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
@@ -10,9 +10,10 @@ InitDataSets();
 
 string sample_labels[];
 pen sample_pens[];
-sample_labels.push("ZeroBias"); sample_pens.push(blue);
-sample_labels.push("DoubleEG"); sample_pens.push(red);
-sample_labels.push("SingleMuon"); sample_pens.push(heavygreen);
+//sample_labels.push("ZeroBias"); sample_pens.push(blue);
+//sample_labels.push("DoubleEG"); sample_pens.push(magenta);
+//sample_labels.push("SingleMuon"); sample_pens.push(heavygreen);
+sample_labels.push("ALL"); sample_pens.push(red);
 
 int xangle = 150;
 
@@ -20,8 +21,8 @@ real sfa = 0.3;
 
 string sectors[], s_labels[];
 real s_y_mins[], s_y_maxs[], s_y_cens[];
-sectors.push("45"); s_labels.push("sector 45"); s_y_mins.push(-0.02); s_y_maxs.push(+0.02); s_y_cens.push(+0.008);
-sectors.push("56"); s_labels.push("sector 56"); s_y_mins.push(-0.03); s_y_maxs.push(+0.01); s_y_cens.push(-0.012);
+sectors.push("45"); s_labels.push("sector 45"); s_y_mins.push(-0.02); s_y_maxs.push(+0.02); s_y_cens.push(+0.006);
+sectors.push("56"); s_labels.push("sector 56"); s_y_mins.push(-0.03); s_y_maxs.push(+0.01); s_y_cens.push(-0.010);
 
 xSizeDef = 40cm;
 
@@ -114,4 +115,4 @@ for (int si : sectors.keys)
 
 //----------------------------------------------------------------------------------------------------
 
-GShipout(hSkip=5mm, vSkip=1mm);
+GShipout("al_hor_rel_slope_cmp_sample", hSkip=5mm, vSkip=1mm);

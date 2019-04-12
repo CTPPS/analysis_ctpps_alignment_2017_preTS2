@@ -5,7 +5,7 @@ include "../fills_samples.asy";
 InitDataSets();
 //AddDataSet("fill_6371/xangle_130");
 
-string topDir = "../../";
+string topDir = "../../data/phys-version1/";
 
 string sectors[];
 sectors.push("sector 45");
@@ -13,10 +13,10 @@ sectors.push("sector 56");
 
 string cuts[], c_labels[];
 real c_ranges[], c_Ticks[], c_ticks[];
-cuts.push("cut_h"); c_labels.push("cut h"); c_ranges.push(0.4); c_Ticks.push(0.10); c_ticks.push(0.05);
-cuts.push("cut_v"); c_labels.push("cut v"); c_ranges.push(0.2); c_Ticks.push(0.05); c_ticks.push(0.01);
+//cuts.push("cut_h"); c_labels.push("cut h"); c_ranges.push(0.4); c_Ticks.push(0.10); c_ticks.push(0.05);
+cuts.push("cut_v"); c_labels.push("cut v"); c_ranges.push(0.4); c_Ticks.push(0.10); c_ticks.push(0.05);
 
-string dataset = "DoubleEG";
+string dataset = "ALL";
 
 xSizeDef = 8cm;
 
@@ -24,9 +24,8 @@ xSizeDef = 8cm;
 
 pen XangleColor(int xangle)
 {
-	if (xangle == 110) return red;
-	if (xangle == 130) return blue;
-	if (xangle == 150) return heavygreen;
+	if (xangle == 120) return red;
+	if (xangle == 150) return blue;
 
 	return black;
 }
@@ -48,7 +47,7 @@ for (int fi : fill_data.keys)
 {
 	int fill = fill_data[fi].fill;
 	
-	if (fill != 6371)
+	if (fill < 6140 || fill > 6193)
 		continue;
 	
 	NewRow();
@@ -73,14 +72,14 @@ for (int fi : fill_data.keys)
 				string dir_base = fill_data[fi].datasets[dsi].tag;
 				int xangle = fill_data[fi].datasets[dsi].xangle;
 
-				string f = topDir + "data/phys/" + dir_base + "/" + dataset + "/distributions.root";
+				string f = topDir + dir_base + "/" + dataset + "/distributions.root";
 				string obj_path = sectors[sci] + "/cuts/" + cuts[cti] + "/h_q_" + cuts[cti] + "_aft";
 
 				pen p = XangleColor(xangle);
 
 				RootObject obj = RootGetObject(f, obj_path, error=false);
 				if (obj.valid)
-					draw(obj, "d0,vl,N", p);	
+					draw(obj, "d0,vl,N,lM", p);	
 			}
 
 			xlimits(-r, r, Crop);
@@ -92,8 +91,7 @@ for (int fi : fill_data.keys)
 	if (fi == 0)
 	{
 		NewPad(false);
-		AddToLegend(format("xangle = %u", 110), XangleColor(110));
-		AddToLegend(format("xangle = %u", 130), XangleColor(130));
+		AddToLegend(format("xangle = %u", 120), XangleColor(120));
 		AddToLegend(format("xangle = %u", 150), XangleColor(150));
 		AttachLegend();
 	}

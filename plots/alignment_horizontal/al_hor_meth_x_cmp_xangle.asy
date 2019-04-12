@@ -3,22 +3,22 @@ import pad_layout;
 
 include "../common.asy";
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
 
 //----------------------------------------------------------------------------------------------------
 
-string sample = "ZeroBias";
+string sample = "ALL";
 
 string method = "method x";
 
 int xangles[];
 string xangle_refs[];
 pen xangle_pens[];
-xangles.push(120); xangle_refs.push("data_alig_fill_5685_xangle_120_DS1"); xangle_pens.push(blue);
-xangles.push(150); xangle_refs.push("data_alig_fill_5685_xangle_150_DS1"); xangle_pens.push(heavygreen);
+xangles.push(120); xangle_refs.push("data_alig-may-version3-aligned_fill_5685_xangle_120_DS1"); xangle_pens.push(blue);
+xangles.push(150); xangle_refs.push("data_alig-may-version3-aligned_fill_5685_xangle_150_DS1"); xangle_pens.push(heavygreen);
 
 real xfa = 0.3;
 
@@ -103,7 +103,9 @@ for (int rpi : rps.keys)
 				obj.vExec("GetPoint", 0, ax, ay); real bsh = ay[0];
 				obj.vExec("GetPoint", 1, ax, ay); real bsh_unc = ay[0];
 
-				real x = fdi + xai * xfa / (xangles.length - 1) - xfa/2;
+				real x = fdi;
+				if (xangles.length > 1)
+					x += xai * xfa / (xangles.length - 1) - xfa/2;
 
 				bool pointValid = (bsh == bsh && bsh_unc == bsh_unc && fabs(bsh) > 0.01);
 	
@@ -129,4 +131,4 @@ for (int rpi : rps.keys)
 
 //----------------------------------------------------------------------------------------------------
 
-GShipout(hSkip=5mm, vSkip=1mm);
+GShipout("al_hor_meth_x_cmp_xangle", hSkip=5mm, vSkip=1mm);

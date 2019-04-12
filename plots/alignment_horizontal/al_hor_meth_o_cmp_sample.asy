@@ -22,9 +22,9 @@ real sfa = 0.3;
 string method = "method o";
 
 //int xangle = 120;
-//string ref_label = "data_alig-may-version2-aligned_fill_5685_xangle_120_DS1";
+//string ref_label = "data_alig-may-version3-aligned_fill_5685_xangle_120_DS1";
 int xangle = 150;
-string ref_label = "data_alig-may-version2-aligned_fill_5685_xangle_150_DS1";
+string ref_label = "data_alig-may-version3-aligned_fill_5685_xangle_150_DS1";
 
 int rp_ids[];
 string rps[], rp_labels[];

@@ -3,20 +3,20 @@ import pad_layout;
 
 include "../common.asy";
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
 
 //----------------------------------------------------------------------------------------------------
 
-string sample = "ZeroBias";
+string sample = "ALL";
 
 int xangles[];
 string xangle_refs[];
 pen xangle_pens[];
-xangles.push(120); xangle_refs.push("data_alig_fill_5685_xangle_120_DS1"); xangle_pens.push(blue);
-xangles.push(150); xangle_refs.push("data_alig_fill_5685_xangle_150_DS1"); xangle_pens.push(heavygreen);
+xangles.push(120); xangle_refs.push("data_alig-may-version3-aligned_fill_5685_xangle_120_DS1"); xangle_pens.push(blue);
+xangles.push(150); xangle_refs.push("data_alig-may-version3-aligned_fill_5685_xangle_150_DS1"); xangle_pens.push(heavygreen);
 
 int rp_ids[];
 string rps[], rp_labels[], rp_dirs[];
@@ -121,4 +121,4 @@ for (int rpi : rps.keys)
 
 //----------------------------------------------------------------------------------------------------
 
-GShipout(hSkip=5mm, vSkip=1mm);
+GShipout("al_vert_meth_s_curve_cmp_xangle", hSkip=5mm, vSkip=1mm);

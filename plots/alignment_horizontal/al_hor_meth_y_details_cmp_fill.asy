@@ -1,21 +1,17 @@
 import root;
 import pad_layout;
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
-string reference = "data_alig_fill_5685_xangle_150_DS1";
+string reference = "data_alig-may-version3-aligned_fill_5685_xangle_150_DS1";
 
 string datasets[] = {
-	"fill_5839/xangle_150/DoubleEG",
-	"fill_5974/xangle_150/DoubleEG",
-	"fill_6090/xangle_150/DoubleEG",
-	"fill_6155/xangle_150/DoubleEG",
-	"fill_6192/xangle_150/DoubleEG",
+	"fill_5839/xangle_150/ALL",
+	"fill_5974/xangle_150/ALL",
+	"fill_6090/xangle_150/ALL",
+	"fill_6155/xangle_150/ALL",
+	"fill_6192/xangle_150/ALL",
 };
-
-string topDir = "../../data/alig-may-version2/";
-string reference = "data_alig-jul-version7_fill_5912_xangle_120_DS1";
-string datasets[] = { "fill_5685/xangle_120/DS1" };
 
 string rps[], rp_labels[];
 rps.push("L_2_F"); rp_labels.push("L-220-fr");

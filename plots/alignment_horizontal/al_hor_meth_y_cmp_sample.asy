@@ -3,7 +3,7 @@ import pad_layout;
 
 include "../common.asy";
 
-string topDir = "../../data/phys/";
+string topDir = "../../data/phys-version1/";
 
 include "../fills_samples.asy";
 InitDataSets();
@@ -12,18 +12,19 @@ InitDataSets();
 
 string sample_labels[];
 pen sample_pens[];
-sample_labels.push("ZeroBias"); sample_pens.push(blue);
-sample_labels.push("DoubleEG"); sample_pens.push(red);
-sample_labels.push("SingleMuon"); sample_pens.push(heavygreen);
+//sample_labels.push("ZeroBias"); sample_pens.push(blue);
+//sample_labels.push("DoubleEG"); sample_pens.push(magenta);
+//sample_labels.push("SingleMuon"); sample_pens.push(heavygreen);
+sample_labels.push("ALL"); sample_pens.push(red);
 
 real sfa = 0.3;
 
 string method = "method y";
 
 //int xangle = 120;
-//string ref_label = "data_alig_fill_5685_xangle_120_DS1";
+//string ref_label = "data_alig-may-version3-aligned_fill_5685_xangle_120_DS1";
 int xangle = 150;
-string ref_label = "data_alig_fill_5685_xangle_150_DS1";
+string ref_label = "data_alig-may-version3-aligned_fill_5685_xangle_150_DS1";
 
 int rp_ids[];
 string rps[], rp_labels[];
@@ -106,7 +107,9 @@ for (int rpi : rps.keys)
 				obj.vExec("GetPoint", 0, ax, ay); real bsh = ay[0];
 				obj.vExec("GetPoint", 1, ax, ay); real bsh_unc = ay[0];
 
-				real x = fdi + sai * sfa / (sample_labels.length - 1) - sfa/2;
+				real x = fdi;
+				if (sample_labels.length > 1)
+					x += sai * sfa / (sample_labels.length - 1) - sfa/2;
 
 				bool pointValid = (bsh == bsh && bsh_unc == bsh_unc && fabs(bsh) > 0.01);
 	
@@ -132,4 +135,4 @@ for (int rpi : rps.keys)
 
 //----------------------------------------------------------------------------------------------------
 
-GShipout(hSkip=5mm, vSkip=1mm);
+GShipout("al_hor_meth_y_cmp_sample", hSkip=5mm, vSkip=1mm);

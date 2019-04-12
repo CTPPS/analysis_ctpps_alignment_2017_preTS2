@@ -1,11 +1,11 @@
 import root;
 import pad_layout;
 
-string topDir = "../../";
+string topDir = "../../data/alig-may-version3/";
 
-string reference = "data_alig-may-version3-aligned_fill_5685_xangle_120_DS1";
+string reference = "data_alig-jul-version8_fill_5912_xangle_120_DS1";
 
-string dataset = "data/phys-version1/fill_5848/xangle_120/ALL";
+string dataset = "fill_5685/xangle_120/DS1";
 
 string rps[], rp_labels[];
 rps.push("L_2_F"); rp_labels.push("L-220-fr");

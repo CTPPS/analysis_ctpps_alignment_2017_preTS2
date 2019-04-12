@@ -1,16 +1,11 @@
 import root;
 import pad_layout;
 
-string topDir = "../../data/phys-version1/";
+string topDir = "../../data/alig-may-version3/";
 
-string reference = "data_alig-may-version3-aligned_fill_5685_xangle_150_DS1";
-
+string reference = "data_alig-jul-version8_fill_5912_xangle_120_DS1";
 string datasets[] = {
-	"fill_5839/xangle_150/ALL",
-	"fill_5974/xangle_150/ALL",
-	"fill_6090/xangle_150/ALL",
-	"fill_6155/xangle_150/ALL",
-	"fill_6192/xangle_150/ALL",
+	"fill_5685/xangle_120/DS1",
 };
 
 string rps[], rp_labels[];
@@ -47,7 +42,7 @@ for (int dsi : datasets.keys)
 		string p_base = reference + "/" + rps[rpi] + "/c_cmp";
 		RootObject obj_base = RootGetObject(f, p_base, error=false);
 
-		RootObject results = RootGetObject(f, reference + "/" + rps[rpi] + "/g_results", error=false);
+		RootObject results = RootGetObject(f, reference + "/" + rps[rpi] + "/g_results", error=true);
 
 		if (!obj_base.valid || !results.valid)
 			continue;
@@ -74,7 +69,7 @@ for (int dsi : datasets.keys)
 		draw(RootGetObject(f, p_base + "#2"), "p,l", red);
 
 		//xlimits(0, 15., Crop);
-		limits((0, 0.05), (15, 0.2), Crop);
+		limits((0, 0.05), (15, 0.45), Crop);
 	}
 }
 

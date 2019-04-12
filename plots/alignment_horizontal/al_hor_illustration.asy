@@ -3,9 +3,9 @@ import pad_layout;
 
 string topDir = "../../";
 
-string dataset = "data/phys/fill_5848/xangle_120/SingleMuon";
+string dataset = "data/phys-version1/fill_5848/xangle_120/ALL";
 
-string reference = "data_alig_fill_5685_xangle_120_DS1";
+string reference = "data_alig-may-version3-aligned_fill_5685_xangle_120_DS1";
 
 string rp = "L_1_F";
 
@@ -47,4 +47,4 @@ limits((4, 0), (17, 3), Crop);
 
 AttachLegend("``method y''", NW, NW);
 
-GShipout(hSkip=10mm, vSkip=1mm);
+GShipout("al_hor_illustration", hSkip=10mm, vSkip=1mm);
