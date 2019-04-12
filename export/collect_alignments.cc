@@ -188,8 +188,8 @@ int main()
 			const double x_corr_rel = b + de_x_F - de_x_N;
 
 			double x_corr_N = 0., x_corr_F = 0.;
-			if (ad.name == "sector 45") x_corr_N = +47E-3, x_corr_F = -47E-3;
-			if (ad.name == "sector 56") x_corr_N = +41E-3, x_corr_F = -41E-3;
+			if (ad.name == "sector 45") x_corr_N = +50E-3, x_corr_F = -50E-3;
+			if (ad.name == "sector 56") x_corr_N = +55E-3, x_corr_F = -55E-3;
 
 			//if (fill >= 6061)
 			//	if (ad.name == "sector 45") x_corr_N += -130E-3, x_corr_F += -130E-3;
