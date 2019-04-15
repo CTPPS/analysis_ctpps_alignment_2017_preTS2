@@ -171,7 +171,7 @@ int main()
 		g.second.f_x_meth_o = (g.first < 100) ? new TF1("", "[0] + [1]*x") : new TF1("", "[0] + [1]*x + [2]*x*x");
 		g.second.g_x_meth_o->Fit(g.second.f_x_meth_o, "Q");
 
-		g.second.f_x_rel = new TF1("", "[0] + [1]*x");
+		g.second.f_x_rel = new TF1("", "[0] + [1]*x + [2]*x*x");
 		g.second.g_x_rel->Fit(g.second.f_x_rel, "Q");
 
 		g.second.f_y_meth_s = new TF1("", "[0] + [1]*x");
@@ -200,8 +200,8 @@ int main()
 			const double x_corr_rel = b + de_x_F - de_x_N;
 
 			double x_corr_N = 0., x_corr_F = 0.;
-			if (ad.name == "sector 45") x_corr_N = +50E-3, x_corr_F = -50E-3;
-			if (ad.name == "sector 56") x_corr_N = +55E-3, x_corr_F = -55E-3;
+			if (ad.name == "sector 45") x_corr_N = +52E-3, x_corr_F = -52E-3;
+			if (ad.name == "sector 56") x_corr_N = +58E-3, x_corr_F = -58E-3;
 
 			// TODO: needed ??
 			//if (fill >= 6061)
