@@ -188,15 +188,15 @@ int main()
 			const double x_corr_rel = b + de_x_F - de_x_N;
 
 			double x_corr_N = 0., x_corr_F = 0.;
-			if (ad.name == "sector 45") x_corr_N = +52E-3, x_corr_F = -52E-3;
-			if (ad.name == "sector 56") x_corr_N = +58E-3, x_corr_F = -58E-3;
+			if (ad.name == "sector 45") x_corr_N = +52E-3 - 80E-3/2., x_corr_F = -52E-3 + 80E-3/2.;
+			if (ad.name == "sector 56") x_corr_N = +58E-3 - 82E-3/2., x_corr_F = -58E-3 + 82E-3/2.;
 
 			//if (fill >= 6061)
 			//	if (ad.name == "sector 45") x_corr_N += -130E-3, x_corr_F += -130E-3;
 
 			double y_corr_N = 0., y_corr_F = 0.;
-			if (ad.name == "sector 45") y_corr_N += +17E-3, y_corr_F += -17E-3;
-			if (ad.name == "sector 56") y_corr_N += -43E-3, y_corr_F += +43E-3;
+			if (ad.name == "sector 45") y_corr_N += +0E-3, y_corr_F += -0E-3;
+			if (ad.name == "sector 56") y_corr_N += -43E-3 + 32E-3, y_corr_F += +43E-3 - 32E-3;
 
 			AlignmentResult ar_N(de_x_N + x_corr_rel/2. + x_corr_N, 150E-3, d_N.sxw_y_meth_s / d_N.sw_y_meth_s + y_corr_N, 150E-3);
 			AlignmentResult ar_F(de_x_F - x_corr_rel/2. + x_corr_F, 150E-3, d_F.sxw_y_meth_s / d_F.sw_y_meth_s + y_corr_F, 150E-3);
