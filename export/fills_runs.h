@@ -138,101 +138,101 @@ void InitFillsRuns(bool useExceptionList = true)
 	fills_runs[6193] = {302660, 302661, 302662, 302663};
 
 	// fills to process (CMS golden & RPs inserted)
-    fills.push_back(5839);
-    fills.push_back(5840);
-    fills.push_back(5842);
-    fills.push_back(5845);
-    fills.push_back(5848);
-    fills.push_back(5849);
-    fills.push_back(5856);
-    fills.push_back(5864);
-    fills.push_back(5865);
-    fills.push_back(5868);
-    fills.push_back(5942);
-    fills.push_back(5946);
-    fills.push_back(5950);
-    fills.push_back(5952);
-    fills.push_back(5954);
-    fills.push_back(5958);
-    fills.push_back(5960);
-    fills.push_back(5962);
-    fills.push_back(5963);
-    fills.push_back(5965);
-    fills.push_back(5966);
-    fills.push_back(5971);
-    fills.push_back(5974);
-    fills.push_back(5976);
-    fills.push_back(5979);
-    fills.push_back(5984);
-    fills.push_back(6019);
-    fills.push_back(6020);
-    fills.push_back(6024);
-    fills.push_back(6026);
-    fills.push_back(6030);
-    fills.push_back(6031);
-    fills.push_back(6035);
-    fills.push_back(6041);
-    fills.push_back(6044);
-    fills.push_back(6046);
-    fills.push_back(6048);
-    fills.push_back(6050);
-    fills.push_back(6052);
-    fills.push_back(6053);
-    fills.push_back(6054);
-    fills.push_back(6055);
-    fills.push_back(6057);
-    fills.push_back(6060);
-    fills.push_back(6061);
-    fills.push_back(6084);
-    fills.push_back(6086);
-    fills.push_back(6089);
-    fills.push_back(6090);
-    fills.push_back(6091);
-    fills.push_back(6093);
-    fills.push_back(6094);
-    fills.push_back(6096);
-    fills.push_back(6097);
-    fills.push_back(6098);
-    fills.push_back(6106);
-    fills.push_back(6110);
-    fills.push_back(6114);
-    fills.push_back(6116);
-    fills.push_back(6119);
-    fills.push_back(6123);
-    fills.push_back(6136);
-    fills.push_back(6138);
-    fills.push_back(6140);
-    fills.push_back(6141);
-    fills.push_back(6142);
-    fills.push_back(6143);
-    fills.push_back(6146);
-    fills.push_back(6147);
-    fills.push_back(6152);
-    fills.push_back(6155);
-    fills.push_back(6156);
-    fills.push_back(6158);
-    fills.push_back(6159);
-    fills.push_back(6160);
-    fills.push_back(6161);
-    fills.push_back(6165);
-    fills.push_back(6167);
-    fills.push_back(6168);
-    fills.push_back(6169);
-    fills.push_back(6170);
-    fills.push_back(6171);
-    fills.push_back(6174);
-    fills.push_back(6175);
-    fills.push_back(6176);
-    fills.push_back(6177);
-    fills.push_back(6179);
-    fills.push_back(6180);
-    fills.push_back(6182);
-    fills.push_back(6185);
-    fills.push_back(6186);
-    fills.push_back(6189);
-    fills.push_back(6191);
-    fills.push_back(6192);
-    fills.push_back(6193);
+	fills.push_back(5839);
+	fills.push_back(5840);
+	fills.push_back(5842);
+	fills.push_back(5845);
+	fills.push_back(5848);
+	fills.push_back(5849);
+	fills.push_back(5856);
+	fills.push_back(5864);
+	fills.push_back(5865);
+	fills.push_back(5868);
+	fills.push_back(5942);
+	fills.push_back(5946);
+	fills.push_back(5950);
+	fills.push_back(5952);
+	fills.push_back(5954);
+	fills.push_back(5958);
+	fills.push_back(5960);
+	fills.push_back(5962);
+	fills.push_back(5963);
+	fills.push_back(5965);
+	fills.push_back(5966);
+	fills.push_back(5971);
+	fills.push_back(5974);
+	fills.push_back(5976);
+	fills.push_back(5979);
+	fills.push_back(5984);
+	fills.push_back(6019);
+	fills.push_back(6020);
+	fills.push_back(6024);
+	fills.push_back(6026);
+	fills.push_back(6030);
+	fills.push_back(6031);
+	fills.push_back(6035);
+	fills.push_back(6041);
+	fills.push_back(6044);
+	fills.push_back(6046);
+	fills.push_back(6048);
+	fills.push_back(6050);
+	fills.push_back(6052);
+	fills.push_back(6053);
+	fills.push_back(6054);
+	fills.push_back(6055);
+	fills.push_back(6057);
+	fills.push_back(6060);
+	fills.push_back(6061);
+	fills.push_back(6084);
+	fills.push_back(6086);
+	fills.push_back(6089);
+	fills.push_back(6090);
+	fills.push_back(6091);
+	fills.push_back(6093);
+	fills.push_back(6094);
+	fills.push_back(6096);
+	fills.push_back(6097);
+	fills.push_back(6098);
+	fills.push_back(6106);
+	fills.push_back(6110);
+	fills.push_back(6114);
+	fills.push_back(6116);
+	fills.push_back(6119);
+	fills.push_back(6123);
+	fills.push_back(6136);
+	fills.push_back(6138);
+	fills.push_back(6140);
+	fills.push_back(6141);
+	fills.push_back(6142);
+	fills.push_back(6143);
+	fills.push_back(6146);
+	fills.push_back(6147);
+	fills.push_back(6152);
+	fills.push_back(6155);
+	fills.push_back(6156);
+	fills.push_back(6158);
+	fills.push_back(6159);
+	fills.push_back(6160);
+	fills.push_back(6161);
+	fills.push_back(6165);
+	fills.push_back(6167);
+	fills.push_back(6168);
+	fills.push_back(6169);
+	fills.push_back(6170);
+	fills.push_back(6171);
+	fills.push_back(6174);
+	fills.push_back(6175);
+	fills.push_back(6176);
+	fills.push_back(6177);
+	fills.push_back(6179);
+	fills.push_back(6180);
+	fills.push_back(6182);
+	fills.push_back(6185);
+	fills.push_back(6186);
+	fills.push_back(6189);
+	fills.push_back(6191);
+	fills.push_back(6192);
+	fills.push_back(6193);
 
 	// build fill reference
 	for (const auto &fill : fills)
@@ -269,4 +269,37 @@ void PrintFillRunMapping()
 	{
 		printf("fillInfoCollection.push_back(FillInfo(%u, false, %u, %u, \"fill %u\"));\n", p.first, p.second.front(), p.second.back(), p.first);
 	}
+}
+
+//----------------------------------------------------------------------------------------------------
+
+void GetFillList()
+{
+	std::vector<unsigned int> runs = {
+//#include "good_runs"
+	};
+
+	std::set<unsigned int> fills;
+
+	for (const auto &run : runs)
+	{
+		for (const auto &p : fills_runs)
+		{
+			bool found = false;
+			for (const auto &ref_run : p.second)
+			{
+				if (run == ref_run)
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if (found)
+				fills.insert(p.first);
+		}
+	}
+
+	for (const auto &fill : fills)
+		printf("%u\n", fill);
 }
