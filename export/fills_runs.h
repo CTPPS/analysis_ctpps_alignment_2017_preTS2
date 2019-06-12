@@ -248,7 +248,7 @@ void InitFillsRuns(bool useExceptionList = true)
 			if (fill == 5958) ref = { 5962, 5958 };
 			if (fill == 5960) ref = { 5962, 5962 };
 
-			if (fill == 5966) ref = { 5971, 5966 };
+			if (fill == 5966) ref = { 5971, 5971 };
 			if (fill == 5974) ref = { 5976, 5974 };
 			if (fill == 6055) ref = { 6055, 6057 };
 			if (fill == 6086) ref = { 6089, 6089 };
