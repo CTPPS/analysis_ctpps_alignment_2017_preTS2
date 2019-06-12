@@ -18,8 +18,8 @@ string sectors[], s_labels[];
 real s_y_mins[], s_y_maxs[];
 string s_rp_Ns[], s_rp_Fs[];
 int s_rp_id_Ns[], s_rp_id_Fs[];
-sectors.push("45"); s_labels.push("sector 45"); s_y_mins.push(38.3); s_y_maxs.push(38.5); s_rp_Ns.push("L_1_F"); s_rp_Fs.push("L_2_F"); s_rp_id_Ns.push(3); s_rp_id_Fs.push(23);
-sectors.push("56"); s_labels.push("sector 56"); s_y_mins.push(39.3); s_y_maxs.push(39.5); s_rp_Ns.push("R_1_F"); s_rp_Fs.push("R_2_F"); s_rp_id_Ns.push(103); s_rp_id_Fs.push(123);
+sectors.push("45"); s_labels.push("sector 45"); s_y_mins.push(38.35); s_y_maxs.push(38.50); s_rp_Ns.push("L_1_F"); s_rp_Fs.push("L_2_F"); s_rp_id_Ns.push(3); s_rp_id_Fs.push(23);
+sectors.push("56"); s_labels.push("sector 56"); s_y_mins.push(39.38); s_y_maxs.push(39.53); s_rp_Ns.push("R_1_F"); s_rp_Fs.push("R_2_F"); s_rp_id_Ns.push(103); s_rp_id_Fs.push(123);
 
 yTicksDef = RightTicks(0.050, 0.010);
 

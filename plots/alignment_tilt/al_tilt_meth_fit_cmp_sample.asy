@@ -22,10 +22,10 @@ real sfa = 0.3;
 int rp_ids[];
 string rps[], rp_labels[];
 real rp_y_min[], rp_y_max[], rp_y_cen[];
-rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_y_min.push(0); rp_y_max.push(0.2); rp_y_cen.push(0.10);
-rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_y_min.push(0); rp_y_max.push(0.2); rp_y_cen.push(0.11);
-rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(0.05); rp_y_max.push(0.25); rp_y_cen.push(0.18);
-rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(0.05); rp_y_max.push(0.25); rp_y_cen.push(0.15);
+rp_ids.push(23); rps.push("L_2_F"); rp_labels.push("L-220-fr"); rp_y_min.push(0); rp_y_max.push(0.2); rp_y_cen.push(0.13);
+rp_ids.push(3); rps.push("L_1_F"); rp_labels.push("L-210-fr"); rp_y_min.push(0); rp_y_max.push(0.2); rp_y_cen.push(0.14);
+rp_ids.push(103); rps.push("R_1_F"); rp_labels.push("R-210-fr"); rp_y_min.push(0.15); rp_y_max.push(0.35); rp_y_cen.push(0.28);
+rp_ids.push(123); rps.push("R_2_F"); rp_labels.push("R-220-fr"); rp_y_min.push(0.15); rp_y_max.push(0.35); rp_y_cen.push(0.28);
 
 xSizeDef = 40cm;
 
@@ -91,7 +91,7 @@ for (int rpi : rps.keys)
 			{
 				string f = topDir + dataset + "/" + sample_labels[sai] + "/y_alignment.root";
 
-				RootObject obj = RootGetObject(f, rps[rpi] + "/p_y_vs_x|ff", error = false);
+				RootObject obj = RootGetObject(f, rps[rpi] + "/g_y_cen_vs_x|ff", error = false);
 		
 				if (!obj.valid)
 					continue;

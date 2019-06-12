@@ -23,6 +23,8 @@ xSizeDef = 9cm;
 xTicksDef = LeftTicks(1., 0.5);
 yTicksDef = RightTicks(0.2, 0.1);
 
+TGraph_errorBar = None;
+
 //----------------------------------------------------------------------------------------------------
 
 for (int dsi : datasets.keys)
@@ -38,8 +40,8 @@ for (int dsi : datasets.keys)
 	{
 		NewPad("$x\ung{mm}$", "mean of $y\ung{mm}$");
 	
-		RootObject profile = RootGetObject(topDir + dataset + "/y_alignment.root", rps[rpi] + "/p_y_vs_x");
-		RootObject fit = RootGetObject(topDir + dataset + "/y_alignment.root", rps[rpi] + "/p_y_vs_x|ff", error=false);
+		RootObject graph = RootGetObject(topDir + dataset + "/y_alignment.root", rps[rpi] + "/g_y_cen_vs_x");
+		RootObject fit = RootGetObject(topDir + dataset + "/y_alignment.root", rps[rpi] + "/g_y_cen_vs_x|ff", error=false);
 		RootObject results = RootGetObject(topDir + dataset + "/y_alignment.root", rps[rpi] + "/g_results");
 
 		if (!fit.valid)
@@ -56,7 +58,7 @@ for (int dsi : datasets.keys)
 		real x_max = -sh_x + 8;
 		real y_cen = fit.rExec("Eval", -sh_x + 3);
 
-		draw(profile, "eb,d0", red);
+		draw(graph, "p", red);
 
 		TF1_x_min = -inf;
 		TF1_x_max = +inf;
@@ -68,7 +70,7 @@ for (int dsi : datasets.keys)
 
 		draw((-sh_x, b), mCi+3pt+magenta);
 	
-		limits((x_min, y_cen - 0.7), (x_max, y_cen + 0.5), Crop);
+		limits((x_min, y_cen - 1.5), (x_max, y_cen + 1.5), Crop);
 
 		yaxis(XEquals(-sh_x, false), heavygreen);
 	

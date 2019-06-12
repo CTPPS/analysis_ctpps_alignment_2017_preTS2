@@ -10,9 +10,13 @@ InitDataSets();
 string files[], f_labels[];
 pen f_pens[];
 
-files.push("/afs/cern.ch/work/j/jkaspar/software/ctpps/development/ctpps_initial_proton_reconstruction_CMSSW_10_2_0/CMSSW_10_2_0/src/RecoCTPPS/ProtonReconstruction/data/alignment/2017_preTS2/collect_alignments_2018_10_26.4.out"); f_labels.push("old"); f_pens.push(blue);
-files.push("../../export/collect_alignments.out"); f_labels.push("intermediate"); f_pens.push(heavygreen);
-files.push("../../export/fit_alignments.out"); f_labels.push("new"); f_pens.push(red);
+string cmsswDir = "/afs/cern.ch/work/j/jkaspar/software/ctpps/development/ctpps_initial_proton_reconstruction_CMSSW_10_2_0/CMSSW_10_2_0/src/RecoCTPPS/ProtonReconstruction/data/alignment/2017_preTS2";
+
+files.push(cmsswDir + "/collect_alignments_2019_04_18.1.out"); f_labels.push("2019\_04\_18.1"); f_pens.push(blue);
+files.push(cmsswDir + "/collect_alignments_2019_06_12.out"); f_labels.push("2019\_06\_12"); f_pens.push(red);
+
+//files.push("../../export/collect_alignments.out"); f_labels.push("intermediate"); f_pens.push(heavygreen);
+//files.push("../../export/fit_alignments.out"); f_labels.push("new"); f_pens.push(red);
 
 int rp_ids[];
 string rps[], rp_labels[];

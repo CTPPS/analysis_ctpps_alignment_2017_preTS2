@@ -11,6 +11,7 @@ InitDataSets();
 //----------------------------------------------------------------------------------------------------
 
 pen p_meth_fit = red;
+pen p_meth_fit_sl_fixed = heavygreen;
 pen p_meth_s_curve = blue;
 
 //string sample = "DoubleEG";
@@ -56,6 +57,7 @@ AddToLegend("(" + sample + ")");
 AddToLegend(format("xangle = %u", xangle));
 
 AddToLegend("method ``fit''", mCi+3pt+p_meth_fit);
+AddToLegend("method ``fit'' (slope fixed)", mCi+3pt+p_meth_fit_sl_fixed);
 AddToLegend("method ``s-curve''", mCi+3pt+p_meth_s_curve);
 
 AttachLegend();
@@ -109,6 +111,9 @@ for (int rpi : rps.keys)
 
 					draw((x, b), m + p_meth_fit);
 					draw((x, b - b_unc)--(x, b + b_unc), p_meth_fit);
+
+					draw((x, b_fs), m + p_meth_fit_sl_fixed);
+					draw((x, b_fs - b_fs_unc)--(x, b_fs + b_fs_unc), p_meth_fit_sl_fixed);
 				}
 
 				// "s curve" method result
