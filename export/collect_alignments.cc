@@ -10,6 +10,7 @@ struct RPData
 	unsigned int n = 0;
 	double sxw_x_meth_o = 0., sw_x_meth_o = 0.;
 	double sxw_x_rel = 0., sw_x_rel = 0.;
+	double sxw_y = 0., sw_y = 0.;
 	double sxw_y_meth_s = 0., sw_y_meth_s = 0.;
 };
 
@@ -84,13 +85,16 @@ int main()
 					signed int r = 0;
 
 					AlignmentResultsCollection arc_x_method_o;
-					r += arc_x_method_o.Load(dir + "/x_alignment_meth_o.out");
+					r += 1 * arc_x_method_o.Load(dir + "/x_alignment_meth_o.out");
 
 					AlignmentResultsCollection arc_x_rel;
-					r += arc_x_rel.Load(dir + "/x_alignment_relative.out");
+					r += 2 * arc_x_rel.Load(dir + "/x_alignment_relative.out");
 
-					AlignmentResultsCollection arc_y_method_s;
-					r += arc_y_method_s.Load(dir + "/y_alignment_alt.out");
+					AlignmentResultsCollection arc_y;
+					r += 4 * arc_y.Load(dir + "/y_alignment.out");
+
+					//AlignmentResultsCollection arc_y_method_s;
+					//r += arc_y_method_s.Load(dir + "/y_alignment_alt.out");
 
 					// check all input available
 					if (r != 0)
@@ -102,7 +106,8 @@ int main()
 					// extract corrections
 					const AlignmentResults &ar_x_method_o = arc_x_method_o["x_alignment_meth_o"];
 					const AlignmentResults &ar_x_rel = arc_x_rel["x_alignment_relative_sl_fix"];
-					const AlignmentResults &ar_y_method_s = arc_y_method_s["y_alignment_alt"];
+					const AlignmentResults &ar_y = arc_y["y_alignment_sl_fix"];
+					//const AlignmentResults &ar_y_method_s = arc_y_method_s["y_alignment_alt"];
 
 					bool found = true;
 
@@ -114,9 +119,13 @@ int main()
 					if (rit_x_rel == ar_x_rel.end())
 						found = false;
 
-					auto rit_y_method_s = ar_y_method_s.find(rp);
-					if (rit_y_method_s == ar_y_method_s.end())
+					auto rit_y = ar_y.find(rp);
+					if (rit_y == ar_y.end())
 						found = false;
+
+					//auto rit_y_method_s = ar_y_method_s.find(rp);
+					//if (rit_y_method_s == ar_y_method_s.end())
+					//	found = false;
 
 					if (!found)
 					{
@@ -138,9 +147,13 @@ int main()
 					d.sw_x_rel += w;
 					d.sxw_x_rel += rit_x_rel->second.sh_x * w;
 
-					w = 1. / pow(rit_y_method_s->second.sh_y_unc, 2.);
-					d.sw_y_meth_s += w;
-					d.sxw_y_meth_s += rit_y_method_s->second.sh_y * w;
+					w = 1. / pow(rit_y->second.sh_y_unc, 2.);
+					d.sw_y += w;
+					d.sxw_y += rit_y->second.sh_y * w;
+
+					//w = 1. / pow(rit_y_method_s->second.sh_y_unc, 2.);
+					//d.sw_y_meth_s += w;
+					//d.sxw_y_meth_s += rit_y_method_s->second.sh_y * w;
 				}
 
 				if (!rpsWithMissingData.empty())
@@ -191,15 +204,12 @@ int main()
 			if (ad.name == "sector 45") x_corr_N = +52E-3 - 80E-3/2., x_corr_F = -52E-3 + 80E-3/2.;
 			if (ad.name == "sector 56") x_corr_N = +58E-3 - 82E-3/2., x_corr_F = -58E-3 + 82E-3/2.;
 
-			//if (fill >= 6061)
-			//	if (ad.name == "sector 45") x_corr_N += -130E-3, x_corr_F += -130E-3;
-
 			double y_corr_N = 0., y_corr_F = 0.;
-			if (ad.name == "sector 45") y_corr_N += +0E-3, y_corr_F += -0E-3;
-			if (ad.name == "sector 56") y_corr_N += -43E-3 + 32E-3, y_corr_F += +43E-3 - 32E-3;
+			if (ad.name == "sector 45") y_corr_N += +35E-3, y_corr_F += -35E-3;
+			if (ad.name == "sector 56") y_corr_N += +110E-3, y_corr_F += 0E-3;
 
-			AlignmentResult ar_N(de_x_N + x_corr_rel/2. + x_corr_N, 150E-3, d_N.sxw_y_meth_s / d_N.sw_y_meth_s + y_corr_N, 150E-3);
-			AlignmentResult ar_F(de_x_F - x_corr_rel/2. + x_corr_F, 150E-3, d_F.sxw_y_meth_s / d_F.sw_y_meth_s + y_corr_F, 150E-3);
+			AlignmentResult ar_N(de_x_N + x_corr_rel/2. + x_corr_N, 150E-3, d_N.sxw_y / d_N.sw_y + y_corr_N, 150E-3);
+			AlignmentResult ar_F(de_x_F - x_corr_rel/2. + x_corr_F, 150E-3, d_F.sxw_y / d_F.sw_y + y_corr_F, 150E-3);
 
 			ars_combined[ad.rp_id_N] = ar_N;
 			ars_combined[ad.rp_id_F] = ar_F;
@@ -219,7 +229,7 @@ int main()
 	}
 
 	// save results
-	output.Write("collect_alignments.out");
+	output.Write("collect_alignments_2019_06_12.out");
 
 	// clean up
 	return 0;
